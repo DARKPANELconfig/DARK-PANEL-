@@ -3206,7 +3206,542 @@ if(typeof MutationObserver!=='undefined'){
 console.log('✅ Ping module loaded');
 })();
 </script>
-'<div class="form-group">' +
+<style>
+/* ============================================
+   بخش تغییر رمز در تنظیمات
+============================================ */
+.change-pass-section {
+    background: linear-gradient(145deg, var(--bg-card), var(--bg-card2));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.change-pass-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(124,58,237,0.3), transparent);
+}
+
+.change-pass-section h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.change-pass-section .desc {
+    color: var(--text-dim);
+    font-size: 13px;
+    margin-bottom: 20px;
+    line-height: 1.7;
+}
+
+.pass-input-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.pass-input-group input {
+    width: 100%;
+    padding: 14px 45px 14px 18px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s;
+    direction: ltr;
+    text-align: left;
+}
+
+.pass-input-group input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 20px rgba(124,58,237,0.2);
+}
+
+.pass-input-group .toggle-eye {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--text-dim);
+    user-select: none;
+    transition: 0.2s;
+}
+
+.pass-input-group .toggle-eye:hover {
+    color: var(--primary-light);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.pass-strength {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+    height: 4px;
+}
+
+.pass-strength .bar {
+    flex: 1;
+    background: var(--border);
+    border-radius: 2px;
+    transition: 0.3s;
+}
+
+.pass-strength .bar.active-weak { background: #ef4444; }
+.pass-strength .bar.active-medium { background: #f59e0b; }
+.pass-strength .bar.active-strong { background: #10b981; }
+
+.pass-strength-text {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 5px;
+    text-align: left;
+}
+
+.pass-current-box {
+    background: rgba(124,58,237,0.05);
+    border: 1px dashed rgba(124,58,237,0.3);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.pass-current-box .curr-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-dim);
+    font-size: 13px;
+}
+
+.pass-current-box .curr-value {
+    font-family: monospace;
+    font-weight: 700;
+    color: var(--primary-light);
+    letter-spacing: 1px;
+    direction: ltr;
+}
+
+.pass-warning-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 15px;
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.25);
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.pass-warning-box .warn-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.pass-warning-box .warn-text {
+    font-size: 13px;
+    color: #fcd34d;
+    line-height: 1.8;
+}
+
+.pass-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.pass-actions .btn {
+    flex: 1;
+    padding: 14px;
+    font-size: 14px;
+}
+
+.pass-reset-btn {
+    background: linear-gradient(135deg, #64748b, #475569) !important;
+    box-shadow: 0 4px 0 #334155, 0 8px 20px rgba(100,116,139,0.2) !important;
+    color: #fff !important;
+    padding: 10px 18px !important;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    transition: 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.pass-reset-btn:hover {
+    transform: translateY(-2px);
+}
+
+.pass-success-msg {
+    display: none;
+    padding: 15px;
+    background: rgba(16,185,129,0.1);
+    border: 1px solid rgba(16,185,129,0.3);
+    border-radius: 12px;
+    color: #6ee7b7;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 15px;
+    animation: slideDown 0.3s ease;
+}
+
+.pass-success-msg.show {
+    display: block;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.pass-error-msg {
+    display: none;
+    padding: 15px;
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 12px;
+    color: #fca5a5;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 15px;
+    animation: slideDown 0.3s ease;
+}
+
+.pass-error-msg.show {
+    display: block;
+}
+
+/* Light theme */
+body.light-theme .change-pass-section {
+    background: #fff !important;
+    border-color: #e0e0e0 !important;
+}
+body.light-theme .pass-input-group input {
+    background: #f0f2f5 !important;
+    border-color: #d1d5db !important;
+    color: #1e1e2e !important;
+}
+body.light-theme .pass-current-box {
+    background: rgba(124,58,237,0.03) !important;
+    border-color: rgba(124,58,237,0.2) !important;
+}
+</style>
+
+<script>
+(function(){
+'use strict';
+
+// ============================================
+// مدیریت رمز عبور
+// ============================================
+function getStoredPassword() {
+    return localStorage.getItem('darkpanel_user_password') || 'DARK CONFIG';
+}
+
+function setStoredPassword(pass) {
+    localStorage.setItem('darkpanel_user_password', pass);
+}
+
+function resetPassword() {
+    localStorage.removeItem('darkpanel_user_password');
+}
+
+// آپدیت متغیر PASSWORD اصلی
+function syncPassword() {
+    if(typeof window.PASSWORD !== 'undefined') {
+        window.PASSWORD = getStoredPassword();
+    }
+}
+
+// اجرای اولیه - سینک رمز
+syncPassword();
+setInterval(syncPassword, 500);
+
+// ============================================
+// چک قدرت رمز
+// ============================================
+function checkPasswordStrength(pass) {
+    if(!pass) return {level: 0, text: '', color: ''};
+    var score = 0;
+    if(pass.length >= 6) score++;
+    if(pass.length >= 10) score++;
+    if(/[A-Z]/.test(pass)) score++;
+    if(/[0-9]/.test(pass)) score++;
+    if(/[^A-Za-z0-9]/.test(pass)) score++;
+
+    var lang = localStorage.getItem('darkpanel_lang') || 'fa';
+    if(score <= 2) return {level: 1, text: lang==='fa'?'ضعیف':'Weak', color: 'weak'};
+    if(score <= 3) return {level: 2, text: lang==='fa'?'متوسط':'Medium', color: 'medium'};
+    return {level: 3, text: lang==='fa'?'قوی':'Strong', color: 'strong'};
+}
+
+// ============================================
+// نمایش/مخفی رمز
+// ============================================
+window.togglePassEye = function(inputId, iconEl) {
+    var input = document.getElementById(inputId);
+    if(!input) return;
+    if(input.type === 'password') {
+        input.type = 'text';
+        iconEl.textContent = '🙈';
+    } else {
+        input.type = 'password';
+        iconEl.textContent = '👁️';
+    }
+};
+
+// ============================================
+// آپدیت نمایش قدرت رمز
+// ============================================
+window.updatePassStrength = function(inputEl) {
+    var pass = inputEl.value;
+    var result = checkPasswordStrength(pass);
+    var section = inputEl.closest('.pass-input-group');
+    if(!section) return;
+
+    var strengthDiv = section.parentNode.querySelector('.pass-strength');
+    var strengthText = section.parentNode.querySelector('.pass-strength-text');
+
+    if(!strengthDiv) return;
+
+    var bars = strengthDiv.querySelectorAll('.bar');
+    bars.forEach(function(b){b.className = 'bar';});
+
+    for(var i = 0; i < result.level; i++) {
+        if(bars[i]) bars[i].className = 'bar active-' + result.color;
+    }
+
+    if(strengthText) {
+        strengthText.textContent = result.text ? '💪 ' + result.text : '';
+        strengthText.style.color = result.color === 'weak' ? '#fca5a5' :
+                                   result.color === 'medium' ? '#fcd34d' :
+                                   result.color === 'strong' ? '#6ee7b7' : 'var(--text-dim)';
+    }
+};
+
+// ============================================
+// تغییر رمز
+// ============================================
+window.changeUserPassword = function() {
+    var lang = localStorage.getItem('darkpanel_lang') || 'fa';
+    var currentInput = document.getElementById('cpCurrent');
+    var newInput = document.getElementById('cpNew');
+    var confirmInput = document.getElementById('cpConfirm');
+    var errorMsg = document.getElementById('cpError');
+    var successMsg = document.getElementById('cpSuccess');
+
+    if(!currentInput || !newInput || !confirmInput) return;
+
+    var current = currentInput.value;
+    var newPass = newInput.value;
+    var confirm = confirmInput.value;
+
+    // مخفی کردن پیام‌ها
+    errorMsg.classList.remove('show');
+    successMsg.classList.remove('show');
+
+    // چک رمز فعلی
+    if(current !== getStoredPassword()) {
+        errorMsg.textContent = lang==='fa' ? '❌ رمز فعلی اشتباه است!' : '❌ Current password is wrong!';
+        errorMsg.classList.add('show');
+        currentInput.style.borderColor = '#ef4444';
+        setTimeout(function(){currentInput.style.borderColor = '';}, 2000);
+        return;
+    }
+
+    // چک خالی نبودن
+    if(!newPass || newPass.length < 4) {
+        errorMsg.textContent = lang==='fa' ? '❌ رمز جدید باید حداقل 4 کاراکتر باشد!' : '❌ New password must be at least 4 characters!';
+        errorMsg.classList.add('show');
+        newInput.style.borderColor = '#ef4444';
+        setTimeout(function(){newInput.style.borderColor = '';}, 2000);
+        return;
+    }
+
+    // چک یکسان بودن
+    if(newPass !== confirm) {
+        errorMsg.textContent = lang==='fa' ? '❌ تکرار رمز مطابقت ندارد!' : '❌ Passwords do not match!';
+        errorMsg.classList.add('show');
+        confirmInput.style.borderColor = '#ef4444';
+        setTimeout(function(){confirmInput.style.borderColor = '';}, 2000);
+        return;
+    }
+
+    // چک تفاوت با رمز فعلی
+    if(newPass === current) {
+        errorMsg.textContent = lang==='fa' ? '❌ رمز جدید با رمز فعلی یکسان است!' : '❌ New password is same as current!';
+        errorMsg.classList.add('show');
+        return;
+    }
+
+    // ذخیره رمز جدید
+    setStoredPassword(newPass);
+    syncPassword();
+
+    // نمایش موفقیت
+    successMsg.textContent = lang==='fa' ?
+        '✅ رمز عبور با موفقیت تغییر کرد! رمز جدید در مرورگر ذخیره شد.' :
+        '✅ Password changed successfully! New password saved in browser.';
+    successMsg.classList.add('show');
+
+    // خالی کردن فرم
+    currentInput.value = '';
+    newInput.value = '';
+    confirmInput.value = '';
+
+    // آپدیت نمایش رمز فعلی
+    updateCurrentPassDisplay();
+
+    // آپدیت نوار قدرت
+    var strengthDiv = document.querySelector('#cpNew ~ .pass-strength');
+    if(!strengthDiv) {
+        strengthDiv = document.querySelectorAll('.pass-strength')[0];
+    }
+    if(strengthDiv) {
+        strengthDiv.querySelectorAll('.bar').forEach(function(b){b.className='bar';});
+    }
+    var strengthText = document.querySelector('.pass-strength-text');
+    if(strengthText) strengthText.textContent = '';
+
+    if(typeof showNotification === 'function') {
+        showNotification(lang==='fa' ? '🔐 رمز عبور تغییر کرد!' : '🔐 Password changed!', 'success');
+    }
+
+    // مخفی کردن پیام موفقیت بعد از 5 ثانیه
+    setTimeout(function(){
+        successMsg.classList.remove('show');
+    }, 5000);
+};
+
+// ============================================
+// بازگردانی رمز پیش‌فرض
+// ============================================
+window.resetToDefaultPassword = function() {
+    var lang = localStorage.getItem('darkpanel_lang') || 'fa';
+    var msg = lang==='fa' ?
+        'آیا مطمئنید میخواهید رمز عبور را به DARK CONFIG برگردانید؟' :
+        'Are you sure you want to reset password to DARK CONFIG?';
+
+    if(confirm(msg)) {
+        resetPassword();
+        syncPassword();
+        updateCurrentPassDisplay();
+        if(typeof showNotification === 'function') {
+            showNotification(lang==='fa' ? '🔄 رمز به پیش‌فرض برگشت!' : '🔄 Password reset!', 'info');
+        }
+    }
+};
+
+// ============================================
+// نمایش رمز فعلی
+// ============================================
+function updateCurrentPassDisplay() {
+    var el = document.getElementById('cpCurrentDisplay');
+    if(el) {
+        var pass = getStoredPassword();
+        var hidden = pass.substring(0, 2) + '•'.repeat(Math.max(pass.length - 2, 3));
+        el.setAttribute('data-real', pass);
+        el.setAttribute('data-hidden', hidden);
+        el.textContent = hidden;
+    }
+}
+
+window.toggleShowCurrentPass = function(el) {
+    var display = document.getElementById('cpCurrentDisplay');
+    if(!display) return;
+    if(display.textContent === display.getAttribute('data-hidden')) {
+        display.textContent = display.getAttribute('data-real');
+        el.textContent = '🙈';
+    } else {
+        display.textContent = display.getAttribute('data-hidden');
+        el.textContent = '👁️';
+    }
+};
+
+// ============================================
+// اضافه کردن به سایدبار و صفحه
+// ============================================
+function addSettingsMenu() {
+    // چک اگر قبلاً اضافه شده
+    if(document.querySelector('[data-settings-menu]')) return;
+
+    var menus = document.querySelectorAll('.sidebar-menu');
+    if(menus.length < 2) return;
+
+    var lang = localStorage.getItem('darkpanel_lang') || 'fa';
+    var lastMenu = menus[menus.length - 1];
+
+    var li = document.createElement('li');
+    li.setAttribute('data-settings-menu', '1');
+    li.innerHTML = '<a href="#" onclick="showPage(\'settings-page\',this)"><span class="icon">⚙️</span> ' + (lang==='fa'?'تنظیمات':'Settings') + '</a>';
+    lastMenu.appendChild(li);
+}
+
+function addSettingsPage() {
+    if(document.getElementById('settings-page')) return;
+
+    var mainContent = document.querySelector('.main-content');
+    if(!mainContent) return;
+
+    var lang = localStorage.getItem('darkpanel_lang') || 'fa';
+    var isFA = lang === 'fa';
+
+    var page = document.createElement('div');
+    page.className = 'page';
+    page.id = 'settings-page';
+    page.innerHTML =
+        '<div class="change-pass-section">' +
+        '<h3>🔐 ' + (isFA?'تغییر رمز عبور پنل':'Change Panel Password') + '</h3>' +
+        '<p class="desc">' + (isFA?'رمز عبور جدید شما فقط در این مرورگر ذخیره می‌شود و کاملاً شخصی و محرمانه است. هیچ‌کس دیگری به آن دسترسی ندارد.':'Your new password is saved only in this browser and is completely private. No one else has access to it.') + '</p>' +
+
+        '<div class="pass-current-box">' +
+        '<div class="curr-info"><span>🔑</span> <span>' + (isFA?'رمز فعلی:':'Current password:') + '</span> <span class="curr-value" id="cpCurrentDisplay">••••••••</span></div>' +
+        '<span class="toggle-eye" onclick="toggleShowCurrentPass(this)" style="cursor:pointer;font-size:20px;">👁️</span>' +
+        '</div>' +
+
+        '<div class="pass-warning-box">' +
+        '<span class="warn-icon">⚠️</span>' +
+        '<span class="warn-text">' + (isFA?'رمز جدید را حتماً یادداشت کنید! اگر رمز را فراموش کنید، باید کش مرورگر را پاک کنید تا به رمز پیش‌فرض DARK CONFIG برگردد.':'Save the new password! If you forget it, you must clear browser cache to reset to default DARK CONFIG.') + '</span>' +
+        '</div>' +
+
+        '<div class="pass-success-msg" id="cpSuccess"></div>' +
+        '<div class="pass-error-msg" id="cpError"></div>' +
+
+        '<div class="form-group">' +
+        '<label>🔒 ' + (isFA?'رمز فعلی':'Current Password') + '</label>' +
+        '<div class="pass-input-group">' +
+        '<input type="password" id="cpCurrent" placeholder="' + (isFA?'رمز فعلی را وارد کنید...':'Enter current password...') + '">' +
+        '<span class="toggle-eye" onclick="togglePassEye(\'cpCurrent\', this)">👁️</span>' +
+        '</div>' +
+        '</div>' +
+
+        '<div class="form-group">' +
         '<label>🆕 ' + (isFA?'رمز جدید':'New Password') + '</label>' +
         '<div class="pass-input-group">' +
         '<input type="password" id="cpNew" placeholder="' + (isFA?'رمز جدید را وارد کنید...':'Enter new password...') + '" oninput="updatePassStrength(this)">' +
@@ -3285,83 +3820,671 @@ setTimeout(function(){
 console.log('✅ Password change module loaded');
 })();
 </script>
-'<div class="form-group">' +
-        '<label>🆕 ' + (isFA?'رمز جدید':'New Password') + '</label>' +
-        '<div class="pass-input-group">' +
-        '<input type="password" id="cpNew" placeholder="' + (isFA?'رمز جدید را وارد کنید...':'Enter new password...') + '" oninput="updatePassStrength(this)">' +
-        '<span class="toggle-eye" onclick="togglePassEye(\'cpNew\', this)">👁️</span>' +
-        '</div>' +
-        '<div class="pass-strength"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>' +
-        '<div class="pass-strength-text"></div>' +
-        '</div>' +
+<style>
+/* ============================================
+   دو پروتکل کنار هم
+============================================ */
+.protocol-selector .protocol-options {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 10px;
+}
 
-        '<div class="form-group">' +
-        '<label>✅ ' + (isFA?'تکرار رمز جدید':'Confirm New Password') + '</label>' +
-        '<div class="pass-input-group">' +
-        '<input type="password" id="cpConfirm" placeholder="' + (isFA?'رمز جدید را دوباره وارد کنید...':'Confirm new password...') + '" onkeypress="if(event.key===\'Enter\')changeUserPassword()">' +
-        '<span class="toggle-eye" onclick="togglePassEye(\'cpConfirm\', this)">👁️</span>' +
-        '</div>' +
-        '</div>' +
+.protocol-item {
+    padding: 18px 20px !important;
+    margin: 0 !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
 
-        '<div class="pass-actions">' +
-        '<button class="btn btn-success" onclick="changeUserPassword()" style="flex:2;">💾 ' + (isFA?'ذخیره رمز جدید':'Save New Password') + '</button>' +
-        '<button class="pass-reset-btn" onclick="resetToDefaultPassword()">🔄 ' + (isFA?'بازگشت به پیش‌فرض':'Reset to Default') + '</button>' +
-        '</div>' +
+.protocol-item .protocol-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
 
-        '<div style="margin-top:25px;padding:15px;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.15);border-radius:12px;font-size:12px;color:var(--text-dim);line-height:1.8;">' +
-        '<strong style="color:#93c5fd;">💡 ' + (isFA?'نکته:':'Tip:') + '</strong> ' +
-        (isFA?'رمز شما فقط در مرورگر شما ذخیره می‌شود (LocalStorage). این یعنی اگر با مرورگر یا دستگاه دیگری وارد شوید، رمز پیش‌فرض DARK CONFIG اعمال می‌شود. برای همین پنل شما کاملاً شخصی و امن است.':'Your password is stored only in your browser (LocalStorage). If you login with another browser or device, the default DARK CONFIG password applies. This way your panel is completely personal and secure.') +
+.protocol-item .protocol-icon {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 22px !important;
+    border-radius: 12px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.protocol-item .protocol-check {
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.protocol-item .protocol-name {
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    letter-spacing: 2px !important;
+    margin: 8px 0 5px !important;
+    text-align: center !important;
+}
+
+.protocol-item .protocol-desc {
+    font-size: 11px !important;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    color: var(--text-dim);
+    text-align: center !important;
+}
+
+.protocol-item .protocol-features {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.protocol-item .protocol-feature {
+    padding: 2px 8px !important;
+    font-size: 9px !important;
+}
+
+.protocol-item .protocol-badge {
+    display: flex !important;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+@media (max-width: 640px) {
+    .protocol-selector .protocol-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* پروتکل VLESS - سبز */
+.protocol-item[data-proto="vless"] {
+    border: 2px solid rgba(16,185,129,0.3) !important;
+    background: linear-gradient(145deg, rgba(18,18,26,0.95), rgba(26,26,46,0.85)) !important;
+    box-shadow:
+        0 4px 0 rgba(4,120,87,0.3),
+        0 8px 20px rgba(16,185,129,0.1),
+        inset 0 1px 0 rgba(255,255,255,0.05) !important;
+}
+
+.protocol-item[data-proto="vless"] .protocol-icon {
+    background: linear-gradient(135deg, #059669, #10b981) !important;
+    box-shadow: 0 3px 0 #047857, 0 6px 12px rgba(16,185,129,0.3);
+}
+
+.protocol-item[data-proto="vless"] .protocol-check {
+    background: linear-gradient(135deg, #059669, #10b981);
+    box-shadow: 0 2px 0 #047857;
+    opacity: 0;
+    transform: scale(0);
+    transition: 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.protocol-item[data-proto="vless"] .protocol-name {
+    color: #6ee7b7;
+    text-shadow: 0 2px 8px rgba(16,185,129,0.3);
+}
+
+.protocol-item[data-proto="vless"]:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: rgba(16,185,129,0.6) !important;
+    box-shadow:
+        0 8px 0 rgba(4,120,87,0.4),
+        0 12px 30px rgba(16,185,129,0.25),
+        0 0 30px rgba(16,185,129,0.15) !important;
+}
+
+.protocol-item[data-proto="vless"].selected {
+    border-color: #10b981 !important;
+    background: linear-gradient(145deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05)) !important;
+    box-shadow:
+        0 4px 0 rgba(4,120,87,0.5),
+        0 8px 30px rgba(16,185,129,0.35),
+        0 0 40px rgba(16,185,129,0.2) !important;
+}
+
+.protocol-item[data-proto="vless"].selected .protocol-check {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.protocol-item[data-proto="vless"] .protocol-feature {
+    background: rgba(16,185,129,0.15) !important;
+    color: #6ee7b7 !important;
+}
+
+/* پروتکل Shadowsocks - آبی */
+.protocol-item[data-proto="ss"] {
+    border: 2px solid rgba(59,130,246,0.3) !important;
+    background: linear-gradient(145deg, rgba(18,18,26,0.95), rgba(26,26,46,0.85)) !important;
+    box-shadow:
+        0 4px 0 rgba(29,78,216,0.3),
+        0 8px 20px rgba(59,130,246,0.1),
+        inset 0 1px 0 rgba(255,255,255,0.05) !important;
+}
+
+.protocol-item[data-proto="ss"] .protocol-icon {
+    background: linear-gradient(135deg, #2563eb, #3b82f6, #60a5fa) !important;
+    box-shadow: 0 3px 0 #1d4ed8, 0 6px 12px rgba(59,130,246,0.3);
+    position: relative;
+}
+
+.protocol-item[data-proto="ss"] .protocol-icon::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 14px;
+    background: linear-gradient(45deg, #60a5fa, #a855f7, #60a5fa);
+    z-index: -1;
+    opacity: 0;
+    transition: 0.3s;
+    filter: blur(6px);
+}
+
+.protocol-item[data-proto="ss"]:hover .protocol-icon::after {
+    opacity: 0.7;
+}
+
+.protocol-item[data-proto="ss"] .protocol-check {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    box-shadow: 0 2px 0 #1d4ed8;
+    opacity: 0;
+    transform: scale(0);
+    transition: 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.protocol-item[data-proto="ss"] .protocol-name {
+    color: #93c5fd;
+    text-shadow: 0 2px 8px rgba(59,130,246,0.3);
+    font-size: 16px !important;
+    letter-spacing: 1px !important;
+}
+
+.protocol-item[data-proto="ss"]:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: rgba(59,130,246,0.6) !important;
+    box-shadow:
+        0 8px 0 rgba(29,78,216,0.4),
+        0 12px 30px rgba(59,130,246,0.25),
+        0 0 30px rgba(59,130,246,0.15) !important;
+}
+
+.protocol-item[data-proto="ss"].selected {
+    border-color: #3b82f6 !important;
+    background: linear-gradient(145deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05)) !important;
+    box-shadow:
+        0 4px 0 rgba(29,78,216,0.5),
+        0 8px 30px rgba(59,130,246,0.35),
+        0 0 40px rgba(59,130,246,0.2) !important;
+}
+
+.protocol-item[data-proto="ss"].selected .protocol-check {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.protocol-item[data-proto="ss"] .protocol-feature {
+    background: rgba(59,130,246,0.15) !important;
+    color: #93c5fd !important;
+}
+
+/* افکت درخشش برای شدوساکس */
+.protocol-item[data-proto="ss"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59,130,246,0.1), transparent);
+    animation: ssShine 4s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes ssShine {
+    0%, 100% { left: -100%; }
+    50% { left: 100%; }
+}
+
+/* بج فعال بالای کارت */
+.protocol-current-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.protocol-current-badge.vless {
+    background: rgba(16,185,129,0.15);
+    color: #6ee7b7;
+    border: 1px solid rgba(16,185,129,0.3);
+}
+
+.protocol-current-badge.ss {
+    background: rgba(59,130,246,0.15);
+    color: #93c5fd;
+    border: 1px solid rgba(59,130,246,0.3);
+}
+
+/* شمارنده لوکیشن‌های موجود */
+.protocol-locations-count {
+    margin-top: 15px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, rgba(124,58,237,0.08), rgba(124,58,237,0.02));
+    border: 1px solid rgba(124,58,237,0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.protocol-locations-count .count-icon {
+    font-size: 20px;
+}
+
+.protocol-locations-count .count-value {
+    color: var(--primary-light);
+    font-weight: 800;
+    font-size: 18px;
+}
+
+/* Light theme */
+body.light-theme .protocol-item[data-proto="vless"] {
+    background: #f8f9fa !important;
+    border-color: rgba(16,185,129,0.2) !important;
+}
+body.light-theme .protocol-item[data-proto="vless"].selected {
+    background: rgba(16,185,129,0.04) !important;
+    border-color: #10b981 !important;
+}
+body.light-theme .protocol-item[data-proto="vless"] .protocol-name {
+    color: #059669 !important;
+    text-shadow: none !important;
+}
+body.light-theme .protocol-item[data-proto="ss"] {
+    background: #f8f9fa !important;
+    border-color: rgba(59,130,246,0.2) !important;
+}
+body.light-theme .protocol-item[data-proto="ss"].selected {
+    background: rgba(59,130,246,0.04) !important;
+    border-color: #3b82f6 !important;
+}
+body.light-theme .protocol-item[data-proto="ss"] .protocol-name {
+    color: #2563eb !important;
+    text-shadow: none !important;
+}
+body.light-theme .protocol-locations-count {
+    background: rgba(124,58,237,0.03) !important;
+    border-color: rgba(124,58,237,0.15) !important;
+}
+</style>
+
+<script>
+(function(){
+'use strict';
+
+// متغیر جهانی پروتکل انتخابی
+window.selectedProtocol = 'vless';
+
+// ============================================
+// تشخیص پروتکل کانفیگ
+// ============================================
+function getConfigProtocol(cfgValue) {
+    if(!cfgValue || typeof cfgValue !== 'string') return null;
+    var v = cfgValue.trim().toLowerCase();
+    if(v.indexOf('vless://') === 0) return 'vless';
+    if(v.indexOf('ss://') === 0) return 'ss';
+    if(v.indexOf('shadowsocks://') === 0) return 'ss';
+    if(v.indexOf('vmess://') === 0) return 'vmess';
+    if(v.indexOf('trojan://') === 0) return 'trojan';
+    return null;
+}
+
+// ============================================
+// چک کن آیا لوکیشن این پروتکل رو داره
+// ============================================
+function locationHasProtocol(loc, protocol) {
+    if(!loc || !loc.configs || loc.configs.length === 0) return false;
+    for(var i = 0; i < loc.configs.length; i++) {
+        var cfg = loc.configs[i];
+        var val = typeof cfg === 'string' ? cfg : (cfg && cfg.value ? cfg.value : '');
+        if(getConfigProtocol(val) === protocol) return true;
+    }
+    return false;
+}
+
+// ============================================
+// شمارش لوکیشن‌های فعال برای پروتکل
+// ============================================
+function countActiveLocations(protocol) {
+    if(typeof LOCATIONS_DB === 'undefined') return 0;
+    var count = 0;
+    Object.keys(LOCATIONS_DB).forEach(function(code){
+        if(locationHasProtocol(LOCATIONS_DB[code], protocol)) count++;
+    });
+    return count;
+}
+
+// ============================================
+// جایگزین کردن UI پروتکل
+// ============================================
+function replaceProtocolUI() {
+    var protoSelector = document.querySelector('.protocol-selector');
+    if(!protoSelector) return;
+
+    if(protoSelector.getAttribute('data-upgraded') === 'yes') return;
+    protoSelector.setAttribute('data-upgraded', 'yes');
+
+    var lang = localStorage.getItem('darkpanel_lang') || 'fa';
+    var isFA = lang === 'fa';
+
+    protoSelector.innerHTML =
+        '<label id="protocolMainLabel">🛡️ ' + (isFA?'انتخاب پروتکل':'Select Protocol') + '</label>' +
+        '<div class="protocol-options">' +
+            // VLESS
+            '<div class="protocol-item selected" data-proto="vless" onclick="selectProtocolNew(\'vless\',this)">' +
+                '<div class="protocol-top">' +
+                    '<div class="protocol-icon">🛡️</div>' +
+                    '<div class="protocol-check">✓</div>' +
+                '</div>' +
+                '<div class="protocol-name">VLESS</div>' +
+                '<div class="protocol-desc">' + (isFA?'پیشرفته و امن':'Advanced & Secure') + '</div>' +
+                '<div class="protocol-features">' +
+                    '<span class="protocol-feature">⚡ ' + (isFA?'سریع':'Fast') + '</span>' +
+                    '<span class="protocol-feature">🔒 ' + (isFA?'امن':'Secure') + '</span>' +
+                '</div>' +
+                '<div class="protocol-badge">' +
+                    '<span class="protocol-current-badge vless">✅ ' + (isFA?'پیشنهادی':'Recommended') + '</span>' +
+                '</div>' +
+            '</div>' +
+            // Shadowsocks
+            '<div class="protocol-item" data-proto="ss" onclick="selectProtocolNew(\'ss\',this)">' +
+                '<div class="protocol-top">' +
+                    '<div class="protocol-icon">🌊</div>' +
+                    '<div class="protocol-check">✓</div>' +
+                '</div>' +
+                '<div class="protocol-name">Shadowsocks</div>' +
+                '<div class="protocol-desc">' + (isFA?'محبوب و ساده':'Popular & Simple') + '</div>' +
+                '<div class="protocol-features">' +
+                    '<span class="protocol-feature">🚀 ' + (isFA?'پرسرعت':'High Speed') + '</span>' +
+                    '<span class="protocol-feature">🌐 ' + (isFA?'گسترده':'Widespread') + '</span>' +
+                '</div>' +
+                '<div class="protocol-badge">' +
+                    '<span class="protocol-current-badge ss">🌊 ' + (isFA?'کلاسیک':'Classic') + '</span>' +
+                '</div>' +
+            '</div>' +
         '</div>' +
+        '<div class="protocol-locations-count" id="protocolLocCount">' +
+            '<div style="display:flex;align-items:center;gap:8px;">' +
+                '<span class="count-icon">📍</span>' +
+                '<span>' + (isFA?'لوکیشن فعال برای این پروتکل:':'Active locations for this protocol:') + '</span>' +
+            '</div>' +
+            '<span class="count-value" id="protocolLocValue">0</span>' +
         '</div>';
 
-    mainContent.appendChild(page);
+    updateLocationCount();
+}
 
-    // آپدیت نمایش رمز
-    updateCurrentPassDisplay();
+// ============================================
+// انتخاب پروتکل
+// ============================================
+window.selectProtocolNew = function(proto, el) {
+    document.querySelectorAll('.protocol-item').forEach(function(p){
+        p.classList.remove('selected');
+    });
+    el.classList.add('selected');
+    window.selectedProtocol = proto;
+
+    // ریست انتخاب لوکیشن
+    if(typeof selectedLocation !== 'undefined') {
+        window.selectedLocation = null;
+    }
+    if(typeof selectedConfigIndex !== 'undefined') {
+        window.selectedConfigIndex = null;
+    }
+
+    // مخفی کردن انتخابگر کانفیگ
+    var configSelector = document.getElementById('configSelector');
+    if(configSelector) configSelector.classList.remove('show');
+
+    // آپدیت لوکیشن گرید
+    if(typeof renderLocationGrid === 'function') {
+        var searchInp = document.querySelector('#create-page .search-box input');
+        renderLocationGrid(window.currentFilter || 'all', searchInp ? searchInp.value : '');
+    }
+
+    updateLocationCount();
+
+    var lang = localStorage.getItem('darkpanel_lang') || 'fa';
+    var msg = proto === 'vless' ?
+        (lang==='fa' ? '🛡️ پروتکل VLESS انتخاب شد' : '🛡️ VLESS protocol selected') :
+        (lang==='fa' ? '🌊 پروتکل Shadowsocks انتخاب شد' : '🌊 Shadowsocks protocol selected');
+
+    if(typeof showNotification === 'function') showNotification(msg, 'success');
+};
+
+// ============================================
+// آپدیت شمارنده لوکیشن
+// ============================================
+function updateLocationCount() {
+    var el = document.getElementById('protocolLocValue');
+    if(!el) return;
+    var count = countActiveLocations(window.selectedProtocol);
+    el.textContent = count;
+}
+
+// ============================================
+// Override renderLocationGrid برای فیلتر پروتکل
+// ============================================
+var _origRenderLoc = window.renderLocationGrid;
+if(typeof _origRenderLoc === 'function') {
+    window.renderLocationGrid = function(filter, search) {
+        // اجرای اصلی
+        _origRenderLoc(filter, search);
+
+        // فیلتر بر اساس پروتکل
+        setTimeout(function(){
+            var grid = document.getElementById('locationGrid');
+            if(!grid) return;
+
+            var items = grid.querySelectorAll('.location-item');
+            items.forEach(function(item){
+                // پیدا کردن کد کشور از خود آیتم
+                var codeEl = item.querySelector('.country-code');
+                if(!codeEl) return;
+                var code = codeEl.textContent.trim();
+
+                if(typeof LOCATIONS_DB === 'undefined' || !LOCATIONS_DB[code]) return;
+                var loc = LOCATIONS_DB[code];
+
+                var hasProto = locationHasProtocol(loc, window.selectedProtocol);
+
+                if(!hasProto) {
+                    // این پروتکل رو نداره - غیرفعال کن
+                    item.classList.add('no-config');
+                    item.onclick = function(){
+                        var lang = localStorage.getItem('darkpanel_lang') || 'fa';
+                        if(typeof showNotification === 'function') {
+                            showNotification(lang==='fa' ?
+                                'این لوکیشن پروتکل ' + window.selectedProtocol.toUpperCase() + ' ندارد! ❌' :
+                                'This location does not have ' + window.selectedProtocol.toUpperCase() + ' protocol! ❌',
+                                'error');
+                        }
+                    };
+                    // آپدیت بج
+                    var badge = item.querySelector('.config-count-badge, .status-active-badge, .status-inactive-badge');
+                    if(badge) {
+                        var lang = localStorage.getItem('darkpanel_lang') || 'fa';
+                        badge.className = 'status-inactive-badge';
+                        badge.innerHTML = '<span class="status-inactive-dot"></span>' + (lang==='fa'?'ندارد':'N/A');
+                    }
+                } else {
+                    // این پروتکل رو داره - فعال
+                    item.classList.remove('no-config');
+                    // آپدیت بج به فعال
+                    var badge2 = item.querySelector('.config-count-badge, .status-active-badge, .status-inactive-badge');
+                    if(badge2) {
+                        var lang2 = localStorage.getItem('darkpanel_lang') || 'fa';
+                        badge2.className = 'status-active-badge';
+                        badge2.innerHTML = '<span class="status-active-dot"></span>' + (lang2==='fa'?'فعال':'ACTIVE');
+                    }
+
+                    // آپدیت onclick برای فیلتر کردن کانفیگ‌ها
+                    item.onclick = function(){
+                        window.selectedLocation = code;
+                        window.selectedConfigIndex = null;
+                        _origRenderLoc(filter, search);
+                        setTimeout(function(){
+                            window.renderLocationGrid(filter, search);
+                        }, 10);
+                        showConfigSelectorFiltered(code);
+                    };
+                }
+            });
+
+            updateLocationCount();
+        }, 50);
+    };
+}
+
+// ============================================
+// نمایش انتخابگر کانفیگ فقط با پروتکل انتخابی
+// ============================================
+window.showConfigSelectorFiltered = function(code) {
+    if(typeof LOCATIONS_DB === 'undefined' || !LOCATIONS_DB[code]) return;
+    var loc = LOCATIONS_DB[code];
+    var selector = document.getElementById('configSelector');
+    var list = document.getElementById('configSelectorList');
+    var nameSpan = document.getElementById('selectedLocationName');
+    if(!selector || !list) return;
+
+    if(nameSpan) nameSpan.textContent = loc.flag + ' ' + loc.name;
+
+    // فقط کانفیگ‌های با پروتکل انتخابی
+    var filteredConfigs = [];
+    loc.configs.forEach(function(cfg, idx){
+        var val = typeof cfg === 'string' ? cfg : (cfg && cfg.value ? cfg.value : '');
+        if(getConfigProtocol(val) === window.selectedProtocol) {
+            filteredConfigs.push({
+                originalIndex: idx,
+                name: (cfg && cfg.name) ? cfg.name : loc.name + ' ' + (idx + 1),
+                value: val
+            });
+        }
+    });
+
+    if(filteredConfigs.length === 0) {
+        selector.classList.remove('show');
+        return;
+    }
+
+    // اگه فقط یکی هست خودکار انتخاب کن
+    if(filteredConfigs.length === 1) {
+        window.selectedConfigIndex = filteredConfigs[0].originalIndex;
+    }
+
+    var html = '';
+    filteredConfigs.forEach(function(cfg){
+        var isSel = window.selectedConfigIndex === cfg.originalIndex;
+        var preview = cfg.value.length > 60 ? cfg.value.substring(0, 60) + '...' : cfg.value;
+        var protoLabel = window.selectedProtocol.toUpperCase();
+        html += '<div class="config-selector-item' + (isSel?' selected':'') + '" onclick="selectFilteredConfig(' + cfg.originalIndex + ')">' +
+            '<div><div class="config-name">' + cfg.name + '</div>' +
+            '<div class="config-preview">' + preview + '</div></div>' +
+            '<span class="config-protocol">' + protoLabel + '</span>' +
+            '</div>';
+    });
+
+    list.innerHTML = html;
+    selector.classList.add('show');
+};
+
+window.selectFilteredConfig = function(idx) {
+    window.selectedConfigIndex = idx;
+    if(window.selectedLocation) {
+        showConfigSelectorFiltered(window.selectedLocation);
+    }
+    var lang = localStorage.getItem('darkpanel_lang') || 'fa';
+    if(typeof showNotification === 'function') {
+        showNotification(lang==='fa' ? 'کانفیگ انتخاب شد ✅' : 'Config selected ✅', 'success');
+    }
+};
+
+// ============================================
+// همچنین renderLocationPageGrid برای صفحه لوکیشن‌ها
+// ============================================
+var _origRenderLocPage = window.renderLocationPageGrid;
+if(typeof _origRenderLocPage === 'function') {
+    // این یکی رو دست نمیزنیم چون صفحه لوکیشن‌ها همه رو نشون میده
 }
 
 // ============================================
 // هوک روی showPage
 // ============================================
-var _origSP = window.showPage;
-if(typeof _origSP === 'function') {
+var _origSPProto = window.showPage;
+if(typeof _origSPProto === 'function') {
     window.showPage = function(p, e) {
-        _origSP(p, e);
-        if(p === 'settings-page') {
-            setTimeout(updateCurrentPassDisplay, 50);
+        _origSPProto(p, e);
+        if(p === 'create-page') {
+            setTimeout(replaceProtocolUI, 50);
+            setTimeout(replaceProtocolUI, 300);
+            setTimeout(function(){
+                if(typeof renderLocationGrid === 'function') {
+                    renderLocationGrid('all', '');
+                }
+            }, 400);
         }
     };
 }
 
 // هوک روی تغییر زبان
-var _origTL = window.toggleLanguage;
-if(typeof _origTL === 'function') {
+var _origTLProto = window.toggleLanguage;
+if(typeof _origTLProto === 'function') {
     window.toggleLanguage = function() {
-        _origTL();
+        _origTLProto();
         setTimeout(function(){
-            var oldMenu = document.querySelector('[data-settings-menu]');
-            if(oldMenu) oldMenu.remove();
-            var oldPage = document.getElementById('settings-page');
-            if(oldPage) oldPage.remove();
-
-            addSettingsMenu();
-            addSettingsPage();
+            var proto = document.querySelector('.protocol-selector');
+            if(proto) {
+                proto.removeAttribute('data-upgraded');
+                replaceProtocolUI();
+            }
         }, 300);
     };
 }
 
 // اجرای اولیه
-setTimeout(function(){
-    addSettingsMenu();
-    addSettingsPage();
-}, 500);
+setTimeout(replaceProtocolUI, 800);
+setTimeout(replaceProtocolUI, 2000);
 
-setTimeout(function(){
-    addSettingsMenu();
-    addSettingsPage();
-}, 2000);
-
-console.log('✅ Password change module loaded');
+console.log('✅ Shadowsocks protocol module loaded');
 })();
 </script>
 <style>
@@ -4254,672 +5377,5 @@ if(typeof MutationObserver !== 'undefined') {
 console.log('✅ Advanced protocol UI + badge fix loaded');
 })();
 </script>
-<style>
-/* ============================================
-   دو پروتکل کنار هم
-============================================ */
-.protocol-selector .protocol-options {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 10px;
-}
-
-.protocol-item {
-    padding: 18px 20px !important;
-    margin: 0 !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1) !important;
-}
-
-.protocol-item .protocol-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-}
-
-.protocol-item .protocol-icon {
-    width: 44px !important;
-    height: 44px !important;
-    font-size: 22px !important;
-    border-radius: 12px !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.protocol-item .protocol-check {
-    width: 26px !important;
-    height: 26px !important;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    color: #fff;
-    flex-shrink: 0;
-}
-
-.protocol-item .protocol-name {
-    font-size: 20px !important;
-    font-weight: 800 !important;
-    letter-spacing: 2px !important;
-    margin: 8px 0 5px !important;
-    text-align: center !important;
-}
-
-.protocol-item .protocol-desc {
-    font-size: 11px !important;
-    line-height: 1.5;
-    margin-bottom: 10px;
-    color: var(--text-dim);
-    text-align: center !important;
-}
-
-.protocol-item .protocol-features {
-    display: flex !important;
-    justify-content: center !important;
-    gap: 5px !important;
-    flex-wrap: wrap;
-    margin-bottom: 8px;
-}
-
-.protocol-item .protocol-feature {
-    padding: 2px 8px !important;
-    font-size: 9px !important;
-}
-
-.protocol-item .protocol-badge {
-    display: flex !important;
-    justify-content: center;
-    margin-top: 5px;
-}
-
-@media (max-width: 640px) {
-    .protocol-selector .protocol-options {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* پروتکل VLESS - سبز */
-.protocol-item[data-proto="vless"] {
-    border: 2px solid rgba(16,185,129,0.3) !important;
-    background: linear-gradient(145deg, rgba(18,18,26,0.95), rgba(26,26,46,0.85)) !important;
-    box-shadow:
-        0 4px 0 rgba(4,120,87,0.3),
-        0 8px 20px rgba(16,185,129,0.1),
-        inset 0 1px 0 rgba(255,255,255,0.05) !important;
-}
-
-.protocol-item[data-proto="vless"] .protocol-icon {
-    background: linear-gradient(135deg, #059669, #10b981) !important;
-    box-shadow: 0 3px 0 #047857, 0 6px 12px rgba(16,185,129,0.3);
-}
-
-.protocol-item[data-proto="vless"] .protocol-check {
-    background: linear-gradient(135deg, #059669, #10b981);
-    box-shadow: 0 2px 0 #047857;
-    opacity: 0;
-    transform: scale(0);
-    transition: 0.3s cubic-bezier(0.34,1.56,0.64,1);
-}
-
-.protocol-item[data-proto="vless"] .protocol-name {
-    color: #6ee7b7;
-    text-shadow: 0 2px 8px rgba(16,185,129,0.3);
-}
-
-.protocol-item[data-proto="vless"]:hover {
-    transform: translateY(-4px) scale(1.02);
-    border-color: rgba(16,185,129,0.6) !important;
-    box-shadow:
-        0 8px 0 rgba(4,120,87,0.4),
-        0 12px 30px rgba(16,185,129,0.25),
-        0 0 30px rgba(16,185,129,0.15) !important;
-}
-
-.protocol-item[data-proto="vless"].selected {
-    border-color: #10b981 !important;
-    background: linear-gradient(145deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05)) !important;
-    box-shadow:
-        0 4px 0 rgba(4,120,87,0.5),
-        0 8px 30px rgba(16,185,129,0.35),
-        0 0 40px rgba(16,185,129,0.2) !important;
-}
-
-.protocol-item[data-proto="vless"].selected .protocol-check {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.protocol-item[data-proto="vless"] .protocol-feature {
-    background: rgba(16,185,129,0.15) !important;
-    color: #6ee7b7 !important;
-}
-
-/* پروتکل Shadowsocks - آبی */
-.protocol-item[data-proto="ss"] {
-    border: 2px solid rgba(59,130,246,0.3) !important;
-    background: linear-gradient(145deg, rgba(18,18,26,0.95), rgba(26,26,46,0.85)) !important;
-    box-shadow:
-        0 4px 0 rgba(29,78,216,0.3),
-        0 8px 20px rgba(59,130,246,0.1),
-        inset 0 1px 0 rgba(255,255,255,0.05) !important;
-}
-
-.protocol-item[data-proto="ss"] .protocol-icon {
-    background: linear-gradient(135deg, #2563eb, #3b82f6, #60a5fa) !important;
-    box-shadow: 0 3px 0 #1d4ed8, 0 6px 12px rgba(59,130,246,0.3);
-    position: relative;
-}
-
-.protocol-item[data-proto="ss"] .protocol-icon::after {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    border-radius: 14px;
-    background: linear-gradient(45deg, #60a5fa, #a855f7, #60a5fa);
-    z-index: -1;
-    opacity: 0;
-    transition: 0.3s;
-    filter: blur(6px);
-}
-
-.protocol-item[data-proto="ss"]:hover .protocol-icon::after {
-    opacity: 0.7;
-}
-
-.protocol-item[data-proto="ss"] .protocol-check {
-    background: linear-gradient(135deg, #2563eb, #3b82f6);
-    box-shadow: 0 2px 0 #1d4ed8;
-    opacity: 0;
-    transform: scale(0);
-    transition: 0.3s cubic-bezier(0.34,1.56,0.64,1);
-}
-
-.protocol-item[data-proto="ss"] .protocol-name {
-    color: #93c5fd;
-    text-shadow: 0 2px 8px rgba(59,130,246,0.3);
-    font-size: 16px !important;
-    letter-spacing: 1px !important;
-}
-
-.protocol-item[data-proto="ss"]:hover {
-    transform: translateY(-4px) scale(1.02);
-    border-color: rgba(59,130,246,0.6) !important;
-    box-shadow:
-        0 8px 0 rgba(29,78,216,0.4),
-        0 12px 30px rgba(59,130,246,0.25),
-        0 0 30px rgba(59,130,246,0.15) !important;
-}
-
-.protocol-item[data-proto="ss"].selected {
-    border-color: #3b82f6 !important;
-    background: linear-gradient(145deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05)) !important;
-    box-shadow:
-        0 4px 0 rgba(29,78,216,0.5),
-        0 8px 30px rgba(59,130,246,0.35),
-        0 0 40px rgba(59,130,246,0.2) !important;
-}
-
-.protocol-item[data-proto="ss"].selected .protocol-check {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.protocol-item[data-proto="ss"] .protocol-feature {
-    background: rgba(59,130,246,0.15) !important;
-    color: #93c5fd !important;
-}
-
-/* افکت درخشش برای شدوساکس */
-.protocol-item[data-proto="ss"]::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 200%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(59,130,246,0.1), transparent);
-    animation: ssShine 4s ease-in-out infinite;
-    pointer-events: none;
-}
-
-@keyframes ssShine {
-    0%, 100% { left: -100%; }
-    50% { left: 100%; }
-}
-
-/* بج فعال بالای کارت */
-.protocol-current-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 10px;
-    font-weight: 700;
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-}
-
-.protocol-current-badge.vless {
-    background: rgba(16,185,129,0.15);
-    color: #6ee7b7;
-    border: 1px solid rgba(16,185,129,0.3);
-}
-
-.protocol-current-badge.ss {
-    background: rgba(59,130,246,0.15);
-    color: #93c5fd;
-    border: 1px solid rgba(59,130,246,0.3);
-}
-
-/* شمارنده لوکیشن‌های موجود */
-.protocol-locations-count {
-    margin-top: 15px;
-    padding: 12px 16px;
-    background: linear-gradient(135deg, rgba(124,58,237,0.08), rgba(124,58,237,0.02));
-    border: 1px solid rgba(124,58,237,0.2);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-}
-
-.protocol-locations-count .count-icon {
-    font-size: 20px;
-}
-
-.protocol-locations-count .count-value {
-    color: var(--primary-light);
-    font-weight: 800;
-    font-size: 18px;
-}
-
-/* Light theme */
-body.light-theme .protocol-item[data-proto="vless"] {
-    background: #f8f9fa !important;
-    border-color: rgba(16,185,129,0.2) !important;
-}
-body.light-theme .protocol-item[data-proto="vless"].selected {
-    background: rgba(16,185,129,0.04) !important;
-    border-color: #10b981 !important;
-}
-body.light-theme .protocol-item[data-proto="vless"] .protocol-name {
-    color: #059669 !important;
-    text-shadow: none !important;
-}
-body.light-theme .protocol-item[data-proto="ss"] {
-    background: #f8f9fa !important;
-    border-color: rgba(59,130,246,0.2) !important;
-}
-body.light-theme .protocol-item[data-proto="ss"].selected {
-    background: rgba(59,130,246,0.04) !important;
-    border-color: #3b82f6 !important;
-}
-body.light-theme .protocol-item[data-proto="ss"] .protocol-name {
-    color: #2563eb !important;
-    text-shadow: none !important;
-}
-body.light-theme .protocol-locations-count {
-    background: rgba(124,58,237,0.03) !important;
-    border-color: rgba(124,58,237,0.15) !important;
-}
-</style>
-
-<script>
-(function(){
-'use strict';
-
-// متغیر جهانی پروتکل انتخابی
-window.selectedProtocol = 'vless';
-
-// ============================================
-// تشخیص پروتکل کانفیگ
-// ============================================
-function getConfigProtocol(cfgValue) {
-    if(!cfgValue || typeof cfgValue !== 'string') return null;
-    var v = cfgValue.trim().toLowerCase();
-    if(v.indexOf('vless://') === 0) return 'vless';
-    if(v.indexOf('ss://') === 0) return 'ss';
-    if(v.indexOf('shadowsocks://') === 0) return 'ss';
-    if(v.indexOf('vmess://') === 0) return 'vmess';
-    if(v.indexOf('trojan://') === 0) return 'trojan';
-    return null;
-}
-
-// ============================================
-// چک کن آیا لوکیشن این پروتکل رو داره
-// ============================================
-function locationHasProtocol(loc, protocol) {
-    if(!loc || !loc.configs || loc.configs.length === 0) return false;
-    for(var i = 0; i < loc.configs.length; i++) {
-        var cfg = loc.configs[i];
-        var val = typeof cfg === 'string' ? cfg : (cfg && cfg.value ? cfg.value : '');
-        if(getConfigProtocol(val) === protocol) return true;
-    }
-    return false;
-}
-
-// ============================================
-// شمارش لوکیشن‌های فعال برای پروتکل
-// ============================================
-function countActiveLocations(protocol) {
-    if(typeof LOCATIONS_DB === 'undefined') return 0;
-    var count = 0;
-    Object.keys(LOCATIONS_DB).forEach(function(code){
-        if(locationHasProtocol(LOCATIONS_DB[code], protocol)) count++;
-    });
-    return count;
-}
-
-// ============================================
-// جایگزین کردن UI پروتکل
-// ============================================
-function replaceProtocolUI() {
-    var protoSelector = document.querySelector('.protocol-selector');
-    if(!protoSelector) return;
-
-    if(protoSelector.getAttribute('data-upgraded') === 'yes') return;
-    protoSelector.setAttribute('data-upgraded', 'yes');
-
-    var lang = localStorage.getItem('darkpanel_lang') || 'fa';
-    var isFA = lang === 'fa';
-
-    protoSelector.innerHTML =
-        '<label id="protocolMainLabel">🛡️ ' + (isFA?'انتخاب پروتکل':'Select Protocol') + '</label>' +
-        '<div class="protocol-options">' +
-            // VLESS
-            '<div class="protocol-item selected" data-proto="vless" onclick="selectProtocolNew(\'vless\',this)">' +
-                '<div class="protocol-top">' +
-                    '<div class="protocol-icon">🛡️</div>' +
-                    '<div class="protocol-check">✓</div>' +
-                '</div>' +
-                '<div class="protocol-name">VLESS</div>' +
-                '<div class="protocol-desc">' + (isFA?'پیشرفته و امن':'Advanced & Secure') + '</div>' +
-                '<div class="protocol-features">' +
-                    '<span class="protocol-feature">⚡ ' + (isFA?'سریع':'Fast') + '</span>' +
-                    '<span class="protocol-feature">🔒 ' + (isFA?'امن':'Secure') + '</span>' +
-                '</div>' +
-                '<div class="protocol-badge">' +
-                    '<span class="protocol-current-badge vless">✅ ' + (isFA?'پیشنهادی':'Recommended') + '</span>' +
-                '</div>' +
-            '</div>' +
-            // Shadowsocks
-            '<div class="protocol-item" data-proto="ss" onclick="selectProtocolNew(\'ss\',this)">' +
-                '<div class="protocol-top">' +
-                    '<div class="protocol-icon">🌊</div>' +
-                    '<div class="protocol-check">✓</div>' +
-                '</div>' +
-                '<div class="protocol-name">Shadowsocks</div>' +
-                '<div class="protocol-desc">' + (isFA?'محبوب و ساده':'Popular & Simple') + '</div>' +
-                '<div class="protocol-features">' +
-                    '<span class="protocol-feature">🚀 ' + (isFA?'پرسرعت':'High Speed') + '</span>' +
-                    '<span class="protocol-feature">🌐 ' + (isFA?'گسترده':'Widespread') + '</span>' +
-                '</div>' +
-                '<div class="protocol-badge">' +
-                    '<span class="protocol-current-badge ss">🌊 ' + (isFA?'کلاسیک':'Classic') + '</span>' +
-                '</div>' +
-            '</div>' +
-        '</div>' +
-        '<div class="protocol-locations-count" id="protocolLocCount">' +
-            '<div style="display:flex;align-items:center;gap:8px;">' +
-                '<span class="count-icon">📍</span>' +
-                '<span>' + (isFA?'لوکیشن فعال برای این پروتکل:':'Active locations for this protocol:') + '</span>' +
-            '</div>' +
-            '<span class="count-value" id="protocolLocValue">0</span>' +
-        '</div>';
-
-    updateLocationCount();
-}
-
-// ============================================
-// انتخاب پروتکل
-// ============================================
-window.selectProtocolNew = function(proto, el) {
-    document.querySelectorAll('.protocol-item').forEach(function(p){
-        p.classList.remove('selected');
-    });
-    el.classList.add('selected');
-    window.selectedProtocol = proto;
-
-    // ریست انتخاب لوکیشن
-    if(typeof selectedLocation !== 'undefined') {
-        window.selectedLocation = null;
-    }
-    if(typeof selectedConfigIndex !== 'undefined') {
-        window.selectedConfigIndex = null;
-    }
-
-    // مخفی کردن انتخابگر کانفیگ
-    var configSelector = document.getElementById('configSelector');
-    if(configSelector) configSelector.classList.remove('show');
-
-    // آپدیت لوکیشن گرید
-    if(typeof renderLocationGrid === 'function') {
-        var searchInp = document.querySelector('#create-page .search-box input');
-        renderLocationGrid(window.currentFilter || 'all', searchInp ? searchInp.value : '');
-    }
-
-    updateLocationCount();
-
-    var lang = localStorage.getItem('darkpanel_lang') || 'fa';
-    var msg = proto === 'vless' ?
-        (lang==='fa' ? '🛡️ پروتکل VLESS انتخاب شد' : '🛡️ VLESS protocol selected') :
-        (lang==='fa' ? '🌊 پروتکل Shadowsocks انتخاب شد' : '🌊 Shadowsocks protocol selected');
-
-    if(typeof showNotification === 'function') showNotification(msg, 'success');
-};
-
-// ============================================
-// آپدیت شمارنده لوکیشن
-// ============================================
-function updateLocationCount() {
-    var el = document.getElementById('protocolLocValue');
-    if(!el) return;
-    var count = countActiveLocations(window.selectedProtocol);
-    el.textContent = count;
-}
-
-// ============================================
-// Override renderLocationGrid برای فیلتر پروتکل
-// ============================================
-var _origRenderLoc = window.renderLocationGrid;
-if(typeof _origRenderLoc === 'function') {
-    window.renderLocationGrid = function(filter, search) {
-        // اجرای اصلی
-        _origRenderLoc(filter, search);
-
-        // فیلتر بر اساس پروتکل
-        setTimeout(function(){
-            var grid = document.getElementById('locationGrid');
-            if(!grid) return;
-
-            var items = grid.querySelectorAll('.location-item');
-            items.forEach(function(item){
-                // پیدا کردن کد کشور از خود آیتم
-                var codeEl = item.querySelector('.country-code');
-                if(!codeEl) return;
-                var code = codeEl.textContent.trim();
-
-                if(typeof LOCATIONS_DB === 'undefined' || !LOCATIONS_DB[code]) return;
-                var loc = LOCATIONS_DB[code];
-
-                var hasProto = locationHasProtocol(loc, window.selectedProtocol);
-
-                if(!hasProto) {
-                    // این پروتکل رو نداره - غیرفعال کن
-                    item.classList.add('no-config');
-                    item.onclick = function(){
-                        var lang = localStorage.getItem('darkpanel_lang') || 'fa';
-                        if(typeof showNotification === 'function') {
-                            showNotification(lang==='fa' ?
-                                'این لوکیشن پروتکل ' + window.selectedProtocol.toUpperCase() + ' ندارد! ❌' :
-                                'This location does not have ' + window.selectedProtocol.toUpperCase() + ' protocol! ❌',
-                                'error');
-                        }
-                    };
-                    // آپدیت بج
-                    var badge = item.querySelector('.config-count-badge, .status-active-badge, .status-inactive-badge');
-                    if(badge) {
-                        var lang = localStorage.getItem('darkpanel_lang') || 'fa';
-                        badge.className = 'status-inactive-badge';
-                        badge.innerHTML = '<span class="status-inactive-dot"></span>' + (lang==='fa'?'ندارد':'N/A');
-                    }
-                } else {
-                    // این پروتکل رو داره - فعال
-                    item.classList.remove('no-config');
-                    // آپدیت بج به فعال
-                    var badge2 = item.querySelector('.config-count-badge, .status-active-badge, .status-inactive-badge');
-                    if(badge2) {
-                        var lang2 = localStorage.getItem('darkpanel_lang') || 'fa';
-                        badge2.className = 'status-active-badge';
-                        badge2.innerHTML = '<span class="status-active-dot"></span>' + (lang2==='fa'?'فعال':'ACTIVE');
-                    }
-
-                    // آپدیت onclick برای فیلتر کردن کانفیگ‌ها
-                    item.onclick = function(){
-                        window.selectedLocation = code;
-                        window.selectedConfigIndex = null;
-                        _origRenderLoc(filter, search);
-                        setTimeout(function(){
-                            window.renderLocationGrid(filter, search);
-                        }, 10);
-                        showConfigSelectorFiltered(code);
-                    };
-                }
-            });
-
-            updateLocationCount();
-        }, 50);
-    };
-}
-
-// ============================================
-// نمایش انتخابگر کانفیگ فقط با پروتکل انتخابی
-// ============================================
-window.showConfigSelectorFiltered = function(code) {
-    if(typeof LOCATIONS_DB === 'undefined' || !LOCATIONS_DB[code]) return;
-    var loc = LOCATIONS_DB[code];
-    var selector = document.getElementById('configSelector');
-    var list = document.getElementById('configSelectorList');
-    var nameSpan = document.getElementById('selectedLocationName');
-    if(!selector || !list) return;
-
-    if(nameSpan) nameSpan.textContent = loc.flag + ' ' + loc.name;
-
-    // فقط کانفیگ‌های با پروتکل انتخابی
-    var filteredConfigs = [];
-    loc.configs.forEach(function(cfg, idx){
-        var val = typeof cfg === 'string' ? cfg : (cfg && cfg.value ? cfg.value : '');
-        if(getConfigProtocol(val) === window.selectedProtocol) {
-            filteredConfigs.push({
-                originalIndex: idx,
-                name: (cfg && cfg.name) ? cfg.name : loc.name + ' ' + (idx + 1),
-                value: val
-            });
-        }
-    });
-
-    if(filteredConfigs.length === 0) {
-        selector.classList.remove('show');
-        return;
-    }
-
-    // اگه فقط یکی هست خودکار انتخاب کن
-    if(filteredConfigs.length === 1) {
-        window.selectedConfigIndex = filteredConfigs[0].originalIndex;
-    }
-
-    var html = '';
-    filteredConfigs.forEach(function(cfg){
-        var isSel = window.selectedConfigIndex === cfg.originalIndex;
-        var preview = cfg.value.length > 60 ? cfg.value.substring(0, 60) + '...' : cfg.value;
-        var protoLabel = window.selectedProtocol.toUpperCase();
-        html += '<div class="config-selector-item' + (isSel?' selected':'') + '" onclick="selectFilteredConfig(' + cfg.originalIndex + ')">' +
-            '<div><div class="config-name">' + cfg.name + '</div>' +
-            '<div class="config-preview">' + preview + '</div></div>' +
-            '<span class="config-protocol">' + protoLabel + '</span>' +
-            '</div>';
-    });
-
-    list.innerHTML = html;
-    selector.classList.add('show');
-};
-
-window.selectFilteredConfig = function(idx) {
-    window.selectedConfigIndex = idx;
-    if(window.selectedLocation) {
-        showConfigSelectorFiltered(window.selectedLocation);
-    }
-    var lang = localStorage.getItem('darkpanel_lang') || 'fa';
-    if(typeof showNotification === 'function') {
-        showNotification(lang==='fa' ? 'کانفیگ انتخاب شد ✅' : 'Config selected ✅', 'success');
-    }
-};
-
-// ============================================
-// همچنین renderLocationPageGrid برای صفحه لوکیشن‌ها
-// ============================================
-var _origRenderLocPage = window.renderLocationPageGrid;
-if(typeof _origRenderLocPage === 'function') {
-    // این یکی رو دست نمیزنیم چون صفحه لوکیشن‌ها همه رو نشون میده
-}
-
-// ============================================
-// هوک روی showPage
-// ============================================
-var _origSPProto = window.showPage;
-if(typeof _origSPProto === 'function') {
-    window.showPage = function(p, e) {
-        _origSPProto(p, e);
-        if(p === 'create-page') {
-            setTimeout(replaceProtocolUI, 50);
-            setTimeout(replaceProtocolUI, 300);
-            setTimeout(function(){
-                if(typeof renderLocationGrid === 'function') {
-                    renderLocationGrid('all', '');
-                }
-            }, 400);
-        }
-    };
-}
-
-// هوک روی تغییر زبان
-var _origTLProto = window.toggleLanguage;
-if(typeof _origTLProto === 'function') {
-    window.toggleLanguage = function() {
-        _origTLProto();
-        setTimeout(function(){
-            var proto = document.querySelector('.protocol-selector');
-            if(proto) {
-                proto.removeAttribute('data-upgraded');
-                replaceProtocolUI();
-            }
-        }, 300);
-    };
-}
-
-// اجرای اولیه
-setTimeout(replaceProtocolUI, 800);
-setTimeout(replaceProtocolUI, 2000);
-
-console.log('✅ Shadowsocks protocol module loaded');
-})();
-        </script>
 </body>
 </html>
