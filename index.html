@@ -9546,5 +9546,406 @@ document.addEventListener('click', function(e){
 console.log('✅ Captcha "I am not a robot" loaded');
 })();
 </script>
+<style id="ultimate-scroll-fix">
+/* ============================================
+   حذف کامل قفل اسکرول - نسخه نهایی
+   با بالاترین اولویت
+============================================ */
+
+html {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    height: auto !important;
+    min-height: 100% !important;
+    position: static !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+html.no-scroll,
+html.modal-open,
+html.locked,
+html[class*="lock"] {
+    overflow-y: auto !important;
+    position: static !important;
+    height: auto !important;
+}
+
+body,
+body.modal-open,
+body.no-scroll,
+body.locked,
+body[class*="lock"] {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    position: relative !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+}
+
+/* اسکرول‌بار زیبا */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(18, 18, 26, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #7c3aed, #9333ea);
+    border-radius: 5px;
+    border: 2px solid rgba(18, 18, 26, 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #9333ea, #a855f7);
+}
+
+/* داشبورد */
+.dashboard {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    position: relative !important;
+}
+
+/* Main content */
+.main-content {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    position: relative !important;
+    padding-bottom: 100px !important;
+}
+
+/* Sidebar فقط در دسکتاپ ثابت باشه */
+@media (min-width: 769px) {
+    .sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        right: 0 !important;
+        height: 100vh !important;
+        overflow-y: auto !important;
+    }
+}
+
+/* موبایل */
+@media (max-width: 768px) {
+    .sidebar {
+        position: relative !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+    .main-content {
+        margin-right: 0 !important;
+    }
+}
+
+/* صفحات */
+.page {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto !important;
+}
+
+/* مودال‌ها بدون قفل کردن body */
+.modal-overlay,
+.profile-modal-overlay,
+.security-alert-overlay,
+.globe-modal-overlay,
+.challenge-overlay,
+.lockout-overlay {
+    position: fixed !important;
+}
+
+/* اسکرول در مودال */
+.modal,
+.profile-modal,
+.security-alert-box,
+.globe-modal,
+.challenge-modal,
+.lockout-modal {
+    max-height: 92vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+</style>
+
+<script>
+(function(){
+'use strict';
+
+// ============================================
+// حذف قطعی همه محدودیت‌های اسکرول
+// ============================================
+function ultimateUnlockScroll() {
+    try {
+        // پاک کردن استایل‌های body
+        var bodyStyle = document.body.style;
+        bodyStyle.removeProperty('overflow');
+        bodyStyle.removeProperty('overflow-x');
+        bodyStyle.removeProperty('overflow-y');
+        bodyStyle.removeProperty('height');
+        bodyStyle.removeProperty('max-height');
+        bodyStyle.removeProperty('position');
+        bodyStyle.removeProperty('padding-right');
+        bodyStyle.removeProperty('padding-left');
+        bodyStyle.removeProperty('margin-right');
+        bodyStyle.removeProperty('margin-left');
+        bodyStyle.removeProperty('top');
+        bodyStyle.removeProperty('left');
+        bodyStyle.removeProperty('right');
+        bodyStyle.removeProperty('bottom');
+
+        // پاک کردن استایل‌های html
+        var htmlStyle = document.documentElement.style;
+        htmlStyle.removeProperty('overflow');
+        htmlStyle.removeProperty('overflow-x');
+        htmlStyle.removeProperty('overflow-y');
+        htmlStyle.removeProperty('height');
+        htmlStyle.removeProperty('max-height');
+        htmlStyle.removeProperty('position');
+        htmlStyle.removeProperty('padding-right');
+
+        // حذف کلاس‌های قفل کننده
+        var badClasses = ['no-scroll', 'modal-open', 'noscroll', 'scroll-lock', 'overflow-hidden', 'locked', 'fixed'];
+        badClasses.forEach(function(cls) {
+            document.body.classList.remove(cls);
+            document.documentElement.classList.remove(cls);
+        });
+
+        // اعمال استایل‌های صحیح با setProperty
+        document.documentElement.style.setProperty('overflow-x', 'hidden', 'important');
+        document.documentElement.style.setProperty('overflow-y', 'auto', 'important');
+        document.documentElement.style.setProperty('height', 'auto', 'important');
+        document.documentElement.style.setProperty('position', 'static', 'important');
+
+        document.body.style.setProperty('overflow-x', 'hidden', 'important');
+        document.body.style.setProperty('overflow-y', 'auto', 'important');
+        document.body.style.setProperty('height', 'auto', 'important');
+        document.body.style.setProperty('min-height', '100vh', 'important');
+        document.body.style.setProperty('position', 'relative', 'important');
+    } catch(e) {}
+}
+
+// اجرای فوری
+ultimateUnlockScroll();
+
+// اجرا مکرر
+var unlockInterval = setInterval(ultimateUnlockScroll, 300);
+
+// چند بار اجرا برای اطمینان
+[50, 100, 300, 500, 1000, 2000, 3000, 5000].forEach(function(delay){
+    setTimeout(ultimateUnlockScroll, delay);
+});
+
+// ============================================
+// جلوگیری از preventDefault در اسکرول
+// ============================================
+var origAddEventListener = EventTarget.prototype.addEventListener;
+EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if(type === 'wheel' || type === 'touchmove' || type === 'scroll' || type === 'mousewheel') {
+        // نذار روی document, body, html بلوکه بشه
+        if(this === document || this === document.body || this === document.documentElement || this === window) {
+            return; // ignore این event listenerها
+        }
+
+        // برای بقیه، passive رو اجباری کن تا preventDefault کار نکنه
+        var newOptions = options;
+        if(typeof options === 'boolean') {
+            newOptions = { capture: options, passive: true };
+        } else if(typeof options === 'object' && options !== null) {
+            newOptions = Object.assign({}, options, { passive: true });
+        } else {
+            newOptions = { passive: true };
+        }
+
+        try {
+            return origAddEventListener.call(this, type, listener, newOptions);
+        } catch(e) {
+            return origAddEventListener.call(this, type, listener, options);
+        }
+    }
+    return origAddEventListener.call(this, type, listener, options);
+};
+
+// ============================================
+// Override preventDefault برای رویدادهای اسکرول
+// ============================================
+var events = ['wheel', 'touchmove', 'scroll', 'mousewheel'];
+events.forEach(function(evt) {
+    document.addEventListener(evt, function(e) {
+        // اگر روی مودال یا اسکرول‌بار مودال بود، اجازه بده
+        var target = e.target;
+        var isInModal = false;
+
+        while(target && target !== document.body) {
+            if(target.classList && (
+                target.classList.contains('modal') ||
+                target.classList.contains('profile-modal') ||
+                target.classList.contains('challenge-modal') ||
+                target.classList.contains('lockout-modal') ||
+                target.classList.contains('security-alert-box') ||
+                target.classList.contains('globe-modal') ||
+                target.classList.contains('location-grid') ||
+                target.classList.contains('avatar-gallery')
+            )) {
+                isInModal = true;
+                break;
+            }
+            target = target.parentElement;
+        }
+
+        // اگر خارج از مودال، preventDefault رو بلوکه کن
+        if(!isInModal) {
+            var origPreventDefault = e.preventDefault;
+            e.preventDefault = function() {
+                // نکن
+            };
+        }
+    }, { capture: true, passive: false });
+});
+
+// ============================================
+// MutationObserver قوی
+// ============================================
+if(typeof MutationObserver !== 'undefined') {
+    var scrollObserver = new MutationObserver(function(mutations) {
+        var needsFix = false;
+
+        mutations.forEach(function(m) {
+            if(m.type === 'attributes') {
+                if(m.attributeName === 'style' || m.attributeName === 'class') {
+                    var target = m.target;
+
+                    if(target === document.body || target === document.documentElement) {
+                        var style = target.getAttribute('style') || '';
+                        var cls = target.className || '';
+
+                        if(style.match(/overflow\s*:\s*hidden/i) ||
+                           style.match(/position\s*:\s*fixed/i) ||
+                           cls.match(/no-scroll|modal-open|noscroll|scroll-lock|overflow-hidden/i)) {
+                            needsFix = true;
+                        }
+                    }
+                }
+            }
+        });
+
+        if(needsFix) {
+            ultimateUnlockScroll();
+        }
+    });
+
+    setTimeout(function(){
+        scrollObserver.observe(document.body, {
+            attributes: true,
+            attributeFilter: ['class', 'style']
+        });
+        scrollObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class', 'style']
+        });
+    }, 100);
+}
+
+// ============================================
+// چک اسکرول با هر رویداد کاربر
+// ============================================
+['click', 'touchstart', 'wheel', 'keydown'].forEach(function(evt){
+    window.addEventListener(evt, function() {
+        setTimeout(ultimateUnlockScroll, 10);
+    }, { passive: true });
+});
+
+// ============================================
+// وقتی صفحه لود شد
+// ============================================
+if(document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        ultimateUnlockScroll();
+        setTimeout(ultimateUnlockScroll, 100);
+        setTimeout(ultimateUnlockScroll, 500);
+    });
+} else {
+    ultimateUnlockScroll();
+}
+
+window.addEventListener('load', function() {
+    ultimateUnlockScroll();
+    setTimeout(ultimateUnlockScroll, 100);
+    setTimeout(ultimateUnlockScroll, 500);
+    setTimeout(ultimateUnlockScroll, 1500);
+});
+
+// ============================================
+// Override توابع مودال‌ها
+// ============================================
+var modalFuncs = ['openProfile', 'closeProfile', 'showConfigResult',
+                  'showConfigResultWithPass', 'showEditForm', 'showSubLink',
+                  'showEditPasswordPrompt', 'showGlobeForLocation',
+                  'closeGlobeModal', 'closeModal', 'showChallenge',
+                  'showLockoutModal', 'closeSubModal'];
+
+modalFuncs.forEach(function(fn){
+    var orig = window[fn];
+    if(typeof orig === 'function') {
+        window[fn] = function() {
+            var result = orig.apply(this, arguments);
+            setTimeout(ultimateUnlockScroll, 10);
+            setTimeout(ultimateUnlockScroll, 100);
+            setTimeout(ultimateUnlockScroll, 500);
+            return result;
+        };
+    }
+});
+
+// ============================================
+// اگه scrollTo کار نکنه، خودش رو اجبار کن
+// ============================================
+window.forceScrollToTop = function() {
+    ultimateUnlockScroll();
+    setTimeout(function(){
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+    }, 50);
+};
+
+window.forceScrollDown = function(px) {
+    ultimateUnlockScroll();
+    setTimeout(function(){
+        window.scrollBy(0, px || 100);
+    }, 50);
+};
+
+// ============================================
+// دیباگ در Console
+// ============================================
+console.log('%c✅ ULTIMATE SCROLL FIX ACTIVATED', 'background:#10b981;color:white;padding:5px 10px;border-radius:5px;font-weight:bold;');
+console.log('📏 Body scroll height:', document.body.scrollHeight, 'px');
+console.log('📏 Window height:', window.innerHeight, 'px');
+console.log('📊 Can scroll:', document.body.scrollHeight > window.innerHeight ? '✅ YES' : '❌ NO');
+
+// اگه اسکرول نمیشه
+setTimeout(function(){
+    if(document.body.scrollHeight <= window.innerHeight + 50) {
+        console.warn('⚠️ محتوای صفحه از ارتفاع صفحه کمتر است. اسکرول نیازی نیست.');
+    } else {
+        console.log('%c✅ صفحه قابل اسکرول است', 'color:#10b981;font-weight:bold;');
+    }
+}, 3000);
+
+})();
+</script>
 </body>
 </html>
