@@ -5377,5 +5377,4178 @@ if(typeof MutationObserver !== 'undefined') {
 console.log('✅ Advanced protocol UI + badge fix loaded');
 })();
 </script>
+<style>
+/* ============================================
+   دایره پروفایل بالای صفحه
+============================================ */
+.profile-avatar-btn {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 9997;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7c3aed, #9333ea, #a855f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    cursor: pointer;
+    box-shadow:
+        0 5px 0 #5b21b6,
+        0 10px 25px rgba(124, 58, 237, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.2),
+        0 0 30px rgba(124, 58, 237, 0.2);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    animation: avatarGlow 3s ease-in-out infinite;
+    user-select: none;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes avatarGlow {
+    0%, 100% { box-shadow: 0 5px 0 #5b21b6, 0 10px 25px rgba(124, 58, 237, 0.4), 0 0 30px rgba(124, 58, 237, 0.2); }
+    50% { box-shadow: 0 5px 0 #5b21b6, 0 10px 25px rgba(124, 58, 237, 0.5), 0 0 45px rgba(124, 58, 237, 0.4); }
+}
+
+.profile-avatar-btn:hover {
+    transform: translateY(-3px) scale(1.08);
+    box-shadow:
+        0 8px 0 #5b21b6,
+        0 15px 35px rgba(124, 58, 237, 0.55),
+        0 0 50px rgba(124, 58, 237, 0.4);
+}
+
+.profile-avatar-btn:active {
+    transform: translateY(2px) scale(0.95);
+}
+
+.profile-avatar-btn::before {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    border: 2px solid rgba(124, 58, 237, 0.4);
+    animation: avatarRing 2s ease-out infinite;
+    pointer-events: none;
+}
+
+@keyframes avatarRing {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.4); opacity: 0; }
+}
+
+.profile-avatar-btn .online-dot {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 14px;
+    height: 14px;
+    background: #10b981;
+    border: 2px solid var(--bg-dark);
+    border-radius: 50%;
+    box-shadow: 0 0 8px #10b981;
+    animation: onlinePulse 2s ease-in-out infinite;
+}
+
+@keyframes onlinePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* موبایل */
+@media (max-width: 768px) {
+    .profile-avatar-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 22px;
+        top: 12px;
+        right: 12px;
+    }
+    .profile-avatar-btn .online-dot {
+        width: 12px;
+        height: 12px;
+    }
+}
+
+/* ============================================
+   مودال پروفایل
+============================================ */
+.profile-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(15px);
+    z-index: 99998;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.profile-modal-overlay.show {
+    display: flex;
+}
+
+.profile-modal {
+    background:
+        radial-gradient(circle at top, rgba(124, 58, 237, 0.15), transparent 60%),
+        linear-gradient(145deg, #12121a, #1a1a2e);
+    border: 2px solid rgba(124, 58, 237, 0.3);
+    border-radius: 24px;
+    width: 600px;
+    max-width: 95%;
+    max-height: 92vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.6),
+        0 0 60px rgba(124, 58, 237, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    animation: profileSlideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes profileSlideUp {
+    from { opacity: 0; transform: translateY(50px) scale(0.9); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.profile-modal::-webkit-scrollbar {
+    width: 6px;
+}
+.profile-modal::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 3px;
+}
+
+/* هدر پروفایل */
+.profile-header {
+    text-align: center;
+    padding: 40px 30px 30px;
+    background:
+        radial-gradient(circle at center top, rgba(124, 58, 237, 0.2), transparent 70%);
+    position: relative;
+    border-bottom: 1px solid rgba(124, 58, 237, 0.15);
+}
+
+.profile-close {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 35px;
+    height: 35px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 50%;
+    color: #fca5a5;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 5;
+}
+
+.profile-close:hover {
+    background: rgba(239, 68, 68, 0.3);
+    transform: rotate(90deg) scale(1.1);
+}
+
+/* آواتار بزرگ */
+.profile-avatar-big {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7c3aed, #9333ea, #a855f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60px;
+    box-shadow:
+        0 10px 0 #5b21b6,
+        0 20px 40px rgba(124, 58, 237, 0.5),
+        inset 0 2px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -3px 0 rgba(0, 0, 0, 0.2),
+        0 0 40px rgba(124, 58, 237, 0.4);
+    position: relative;
+    animation: avatarFloat 4s ease-in-out infinite;
+    cursor: pointer;
+    border: 4px solid rgba(255, 255, 255, 0.15);
+}
+
+@keyframes avatarFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.profile-avatar-big:hover {
+    transform: scale(1.05);
+}
+
+.profile-avatar-big .change-avatar-icon {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(135deg, #059669, #10b981);
+    border: 2px solid var(--bg-dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.profile-username {
+    font-size: 24px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #c084fc, #e9d5ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+}
+
+.profile-role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 14px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(245, 158, 11, 0.1));
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #fcd34d;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    box-shadow: 0 3px 10px rgba(245, 158, 11, 0.2);
+    margin-bottom: 10px;
+}
+
+.profile-bio {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    max-width: 400px;
+    margin: 15px auto 0;
+    padding: 10px 15px;
+    background: rgba(124, 58, 237, 0.05);
+    border: 1px dashed rgba(124, 58, 237, 0.2);
+    border-radius: 12px;
+    font-style: italic;
+}
+
+/* تب‌های پروفایل */
+.profile-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 15px 25px;
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(124, 58, 237, 0.1);
+    overflow-x: auto;
+}
+
+.profile-tab {
+    padding: 10px 18px;
+    background: transparent;
+    border: 1px solid rgba(124, 58, 237, 0.15);
+    border-radius: 10px;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all 0.3s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.profile-tab:hover {
+    background: rgba(124, 58, 237, 0.1);
+    color: var(--text);
+}
+
+.profile-tab.active {
+    background: linear-gradient(135deg, #7c3aed, #9333ea);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 3px 10px rgba(124, 58, 237, 0.3);
+}
+
+/* محتوای تب‌ها */
+.profile-content {
+    padding: 25px;
+}
+
+.profile-tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.profile-tab-content.active {
+    display: block;
+}
+
+/* آمار پروفایل */
+.profile-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.profile-stat-card {
+    background: linear-gradient(145deg, rgba(124, 58, 237, 0.08), rgba(124, 58, 237, 0.02));
+    border: 1px solid rgba(124, 58, 237, 0.15);
+    border-radius: 14px;
+    padding: 15px 12px;
+    text-align: center;
+    transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 3px 0 rgba(91, 33, 182, 0.2);
+    cursor: default;
+}
+
+.profile-stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(124, 58, 237, 0.2);
+}
+
+.profile-stat-card .stat-icon {
+    font-size: 28px;
+    margin-bottom: 5px;
+    display: block;
+    filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.3));
+}
+
+.profile-stat-card .stat-num {
+    font-size: 22px;
+    font-weight: 900;
+    color: #c084fc;
+    margin-bottom: 3px;
+}
+
+.profile-stat-card .stat-name {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: 600;
+}
+
+/* اطلاعات کاربر */
+.profile-info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    transition: 0.2s;
+}
+
+.profile-info-item:hover {
+    background: rgba(124, 58, 237, 0.05);
+    border-color: rgba(124, 58, 237, 0.2);
+}
+
+.profile-info-item .info-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-dim);
+    font-size: 13px;
+}
+
+.profile-info-item .info-value {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 13px;
+    direction: ltr;
+}
+
+/* گالری آواتار */
+.avatar-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+    gap: 10px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 14px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.avatar-option {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(124, 58, 237, 0.05));
+    border: 2px solid rgba(124, 58, 237, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    cursor: pointer;
+    transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.avatar-option:hover {
+    transform: scale(1.15) rotate(-10deg);
+    border-color: var(--primary);
+    background: rgba(124, 58, 237, 0.15);
+}
+
+.avatar-option.selected {
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.15);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+    transform: scale(1.1);
+}
+
+/* ویرایش بیو */
+.profile-edit-section {
+    background: rgba(124, 58, 237, 0.05);
+    border: 1px solid rgba(124, 58, 237, 0.15);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.profile-edit-section h4 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    margin-bottom: 12px;
+    color: #c084fc;
+}
+
+.profile-edit-section textarea,
+.profile-edit-section input {
+    width: 100%;
+    padding: 12px 15px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: 0.3s;
+    resize: vertical;
+}
+
+.profile-edit-section textarea {
+    min-height: 80px;
+    font-family: 'Vazirmatn', sans-serif;
+}
+
+.profile-edit-section input:focus,
+.profile-edit-section textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.2);
+}
+
+.profile-save-btn {
+    width: 100%;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 4px 0 #047857, 0 8px 20px rgba(16, 185, 129, 0.3);
+    transition: 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    margin-top: 12px;
+}
+
+.profile-save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #047857, 0 10px 25px rgba(16, 185, 129, 0.4);
+}
+
+.profile-save-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #047857;
+}
+
+/* دستاوردها */
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.achievement-card {
+    background: linear-gradient(145deg, rgba(245, 158, 11, 0.08), rgba(245, 158, 11, 0.02));
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-radius: 14px;
+    padding: 15px 10px;
+    text-align: center;
+    position: relative;
+    transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 3px 0 rgba(180, 83, 9, 0.2);
+}
+
+.achievement-card.locked {
+    opacity: 0.4;
+    filter: grayscale(1);
+}
+
+.achievement-card:not(.locked):hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(245, 158, 11, 0.2);
+}
+
+.achievement-card .ach-icon {
+    font-size: 40px;
+    margin-bottom: 8px;
+    display: block;
+    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.4));
+}
+
+.achievement-card .ach-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: #fcd34d;
+    margin-bottom: 4px;
+}
+
+.achievement-card .ach-desc {
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.4;
+}
+
+.achievement-card.unlocked::before {
+    content: '✓';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 900;
+    box-shadow: 0 2px 5px rgba(16, 185, 129, 0.4);
+}
+
+/* فعالیت‌های اخیر */
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    transition: 0.2s;
+}
+
+.activity-item:hover {
+    background: rgba(124, 58, 237, 0.05);
+    border-color: rgba(124, 58, 237, 0.2);
+}
+
+.activity-item .act-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(124, 58, 237, 0.05));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.activity-item .act-info {
+    flex: 1;
+}
+
+.activity-item .act-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 3px;
+}
+
+.activity-item .act-time {
+    font-size: 11px;
+    color: var(--text-dim);
+}
+
+/* دکمه خروج */
+.profile-logout-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05));
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 15px;
+    transition: 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.profile-logout-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+}
+
+/* Light theme */
+body.light-theme .profile-modal {
+    background:
+        radial-gradient(circle at top, rgba(124, 58, 237, 0.08), transparent 60%),
+        linear-gradient(145deg, #ffffff, #f8f9fa) !important;
+    border-color: rgba(124, 58, 237, 0.2) !important;
+}
+
+body.light-theme .profile-info-item {
+    background: #f8f9fa !important;
+    border-color: #e0e0e0 !important;
+}
+
+body.light-theme .profile-info-item .info-value {
+    color: #1e1e2e !important;
+}
+
+body.light-theme .profile-stat-card {
+    background: #f8f9fa !important;
+    border-color: rgba(124, 58, 237, 0.15) !important;
+}
+
+body.light-theme .avatar-gallery {
+    background: #f8f9fa !important;
+}
+
+body.light-theme .avatar-option {
+    background: #f0f2f5 !important;
+    border-color: #e0e0e0 !important;
+}
+
+body.light-theme .profile-username {
+    color: #7c3aed !important;
+}
+
+body.light-theme .activity-item {
+    background: #f8f9fa !important;
+    border-color: #e0e0e0 !important;
+}
+
+body.light-theme .profile-edit-section {
+    background: rgba(124, 58, 237, 0.03) !important;
+}
+
+body.light-theme .profile-edit-section input,
+body.light-theme .profile-edit-section textarea {
+    background: #f0f2f5 !important;
+    border-color: #d1d5db !important;
+    color: #1e1e2e !important;
+}
+</style>
+
+<script>
+(function(){
+'use strict';
+
+// ============================================
+// آواتارها
+// ============================================
+var AVATARS = [
+    '👤','🧑','👨','👩','🧑‍💻','👨‍💻','👩‍💻',
+    '🦁','🐯','🐺','🐼','🐨','🦊','🐱','🐶','🐰','🦄',
+    '🤖','👽','👻','🎃','🧙','🧛','🦸','🦹','🥷','👑',
+    '⚡','🔥','💎','🌟','🚀','🎯','🎮','🎨','🌈','🦅'
+];
+
+// ============================================
+// مدیریت پروفایل
+// ============================================
+function getProfile() {
+    var user = localStorage.getItem('darkpanel_current_user') || 'کاربر';
+    var profile = localStorage.getItem('darkpanel_profile_' + user);
+    if(profile) {
+        try { return JSON.parse(profile); } catch(e){}
+    }
+    return {
+        avatar: '⚡',
+        bio: 'کاربر پنل DARK PANEL',
+        joinedAt: new Date().toISOString(),
+        role: 'کاربر عادی',
+        favoriteCountry: '🌍'
+    };
+}
+
+function saveProfile(profile) {
+    var user = localStorage.getItem('darkpanel_current_user') || 'کاربر';
+    localStorage.setItem('darkpanel_profile_' + user, JSON.stringify(profile));
+}
+
+function getCurrentUsername() {
+    return localStorage.getItem('darkpanel_current_user') || 'کاربر';
+}
+
+// ============================================
+// ساخت دکمه آواتار
+// ============================================
+function createAvatarButton() {
+    if(document.getElementById('profileAvatarBtn')) return;
+
+    var profile = getProfile();
+    var btn = document.createElement('div');
+    btn.id = 'profileAvatarBtn';
+    btn.className = 'profile-avatar-btn';
+    btn.title = 'پروفایل کاربری';
+    btn.innerHTML = profile.avatar + '<div class="online-dot"></div>';
+    btn.onclick = openProfile;
+
+    document.body.appendChild(btn);
+}
+
+function updateAvatarButton() {
+    var btn = document.getElementById('profileAvatarBtn');
+    if(!btn) return;
+    var profile = getProfile();
+    btn.innerHTML = profile.avatar + '<div class="online-dot"></div>';
+}
+
+// ============================================
+// باز کردن مودال پروفایل
+// ============================================
+window.openProfile = function() {
+    var oldModal = document.getElementById('profileModalOverlay');
+    if(oldModal) oldModal.remove();
+
+    var profile = getProfile();
+    var username = getCurrentUsername();
+    var configsCount = typeof configs !== 'undefined' ? configs.length : 0;
+    var activeConfigs = typeof configs !== 'undefined' ?
+        configs.filter(function(c){ return typeof getConfigStatus === 'function' && getConfigStatus(c).class === 'active'; }).length : 0;
+    var totalDevices = typeof configs !== 'undefined' ?
+        configs.reduce(function(s,c){ return s + (c.devices ? c.devices.length : 0); }, 0) : 0;
+    var locations = typeof configs !== 'undefined' ?
+        new Set(configs.map(function(c){return c.location;})).size : 0;
+
+    // محاسبه سن اکانت
+    var joined = new Date(profile.joinedAt);
+    var days = Math.floor((new Date() - joined) / (1000 * 60 * 60 * 24));
+
+    // محاسبه دستاوردها
+    var achievements = calculateAchievements(configsCount, activeConfigs, days);
+
+    var modal = document.createElement('div');
+    modal.id = 'profileModalOverlay';
+    modal.className = 'profile-modal-overlay';
+    modal.onclick = function(e){ if(e.target === modal) closeProfile(); };
+
+    modal.innerHTML =
+        '<div class="profile-modal">' +
+
+        '<div class="profile-header">' +
+            '<button class="profile-close" onclick="closeProfile()">×</button>' +
+
+            '<div class="profile-avatar-big" onclick="switchProfileTab(\'avatar\')">' +
+                profile.avatar +
+                '<div class="change-avatar-icon">✏️</div>' +
+            '</div>' +
+
+            '<div class="profile-username">' + username + '</div>' +
+            '<div class="profile-role-badge">👑 ' + profile.role + '</div>' +
+
+            (profile.bio ? '<div class="profile-bio">💬 ' + profile.bio + '</div>' : '') +
+        '</div>' +
+
+        '<div class="profile-tabs">' +
+            '<button class="profile-tab active" onclick="switchProfileTab(\'stats\')">📊 آمار</button>' +
+            '<button class="profile-tab" onclick="switchProfileTab(\'info\')">ℹ️ اطلاعات</button>' +
+            '<button class="profile-tab" onclick="switchProfileTab(\'achievements\')">🏆 دستاوردها</button>' +
+            '<button class="profile-tab" onclick="switchProfileTab(\'avatar\')">🎭 آواتار</button>' +
+            '<button class="profile-tab" onclick="switchProfileTab(\'edit\')">✏️ ویرایش</button>' +
+        '</div>' +
+
+        '<div class="profile-content">' +
+
+            // آمار
+            '<div class="profile-tab-content active" id="ptab-stats">' +
+                '<div class="profile-stats-grid">' +
+                    '<div class="profile-stat-card">' +
+                        '<span class="stat-icon">📦</span>' +
+                        '<div class="stat-num">' + configsCount + '</div>' +
+                        '<div class="stat-name">کل کانفیگ</div>' +
+                    '</div>' +
+                    '<div class="profile-stat-card">' +
+                        '<span class="stat-icon">✅</span>' +
+                        '<div class="stat-num">' + activeConfigs + '</div>' +
+                        '<div class="stat-name">فعال</div>' +
+                    '</div>' +
+                    '<div class="profile-stat-card">' +
+                        '<span class="stat-icon">🌍</span>' +
+                        '<div class="stat-num">' + locations + '</div>' +
+                        '<div class="stat-name">لوکیشن</div>' +
+                    '</div>' +
+                    '<div class="profile-stat-card">' +
+                        '<span class="stat-icon">📱</span>' +
+                        '<div class="stat-num">' + totalDevices + '</div>' +
+                        '<div class="stat-name">دستگاه</div>' +
+                    '</div>' +
+                    '<div class="profile-stat-card">' +
+                        '<span class="stat-icon">📅</span>' +
+                        '<div class="stat-num">' + days + '</div>' +
+                        '<div class="stat-name">روز عضو</div>' +
+                    '</div>' +
+                    '<div class="profile-stat-card">' +
+                        '<span class="stat-icon">⭐</span>' +
+                        '<div class="stat-num">' + achievements.unlocked + '</div>' +
+                        '<div class="stat-name">دستاورد</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div style="text-align:center;margin-top:20px;padding:15px;background:rgba(124,58,237,0.05);border-radius:12px;">' +
+                    '<div style="font-size:13px;color:var(--text-dim);margin-bottom:8px;">🎯 سطح شما</div>' +
+                    '<div style="font-size:22px;font-weight:900;background:linear-gradient(135deg,#fcd34d,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">' +
+                        getUserLevel(configsCount) +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+
+            // اطلاعات
+            '<div class="profile-tab-content" id="ptab-info">' +
+                '<div class="profile-info-item">' +
+                    '<div class="info-label">👤 <span>نام کاربری</span></div>' +
+                    '<div class="info-value">' + username + '</div>' +
+                '</div>' +
+                '<div class="profile-info-item">' +
+                    '<div class="info-label">👑 <span>نقش</span></div>' +
+                    '<div class="info-value">' + profile.role + '</div>' +
+                '</div>' +
+                '<div class="profile-info-item">' +
+                    '<div class="info-label">📅 <span>تاریخ عضویت</span></div>' +
+                    '<div class="info-value">' + formatDateSimple(profile.joinedAt) + '</div>' +
+                '</div>' +
+                '<div class="profile-info-item">' +
+                    '<div class="info-label">⏰ <span>مدت عضویت</span></div>' +
+                    '<div class="info-value">' + days + ' روز</div>' +
+                '</div>' +
+                '<div class="profile-info-item">' +
+                    '<div class="info-label">🌍 <span>کشور مورد علاقه</span></div>' +
+                    '<div class="info-value">' + profile.favoriteCountry + '</div>' +
+                '</div>' +
+                '<div class="profile-info-item">' +
+                    '<div class="info-label">🎯 <span>سطح</span></div>' +
+                    '<div class="info-value">' + getUserLevel(configsCount) + '</div>' +
+                '</div>' +
+                '<div class="profile-info-item">' +
+                    '<div class="info-label">⚡ <span>وضعیت</span></div>' +
+                    '<div class="info-value" style="color:#6ee7b7;">🟢 آنلاین</div>' +
+                '</div>' +
+                '<button class="profile-logout-btn" onclick="doLogoutFromProfile()">' +
+                    '🚪 خروج از حساب کاربری' +
+                '</button>' +
+            '</div>' +
+
+            // دستاوردها
+            '<div class="profile-tab-content" id="ptab-achievements">' +
+                '<div style="text-align:center;margin-bottom:15px;">' +
+                    '<div style="font-size:24px;font-weight:800;color:#fcd34d;">🏆 ' + achievements.unlocked + '/' + achievements.total + '</div>' +
+                    '<div style="font-size:12px;color:var(--text-dim);">دستاورد کسب شده</div>' +
+                '</div>' +
+                '<div class="achievements-grid">' +
+                    achievements.list.map(function(a){
+                        return '<div class="achievement-card ' + (a.unlocked ? 'unlocked' : 'locked') + '">' +
+                            '<span class="ach-icon">' + a.icon + '</span>' +
+                            '<div class="ach-name">' + a.name + '</div>' +
+                            '<div class="ach-desc">' + a.desc + '</div>' +
+                            '</div>';
+                    }).join('') +
+                '</div>' +
+            '</div>' +
+
+            // آواتار
+            '<div class="profile-tab-content" id="ptab-avatar">' +
+                '<h4 style="margin-bottom:15px;display:flex;align-items:center;gap:8px;">🎭 <span>انتخاب آواتار</span></h4>' +
+                '<div class="avatar-gallery">' +
+                    AVATARS.map(function(a){
+                        return '<div class="avatar-option ' + (a === profile.avatar ? 'selected' : '') + '" onclick="pickAvatar(\'' + a + '\',this)">' + a + '</div>';
+                    }).join('') +
+                '</div>' +
+            '</div>' +
+
+            // ویرایش
+            '<div class="profile-tab-content" id="ptab-edit">' +
+                '<div class="profile-edit-section">' +
+                    '<h4>💬 <span>بیوگرافی</span></h4>' +
+                    '<textarea id="editBio" placeholder="خودتون رو معرفی کنید...">' + (profile.bio || '') + '</textarea>' +
+                '</div>' +
+                '<div class="profile-edit-section">' +
+                    '<h4>👑 <span>نقش دلخواه</span></h4>' +
+                    '<input type="text" id="editRole" value="' + profile.role + '" placeholder="مثلاً: مدیر، توسعه‌دهنده...">' +
+                '</div>' +
+                '<div class="profile-edit-section">' +
+                    '<h4>🌍 <span>کشور مورد علاقه</span></h4>' +
+                    '<input type="text" id="editCountry" value="' + profile.favoriteCountry + '" placeholder="مثلاً: 🇩🇪 آلمان">' +
+                '</div>' +
+                '<button class="profile-save-btn" onclick="saveProfileChanges()">' +
+                    '💾 ذخیره تغییرات' +
+                '</button>' +
+            '</div>' +
+
+        '</div>' +
+        '</div>';
+
+    document.body.appendChild(modal);
+    setTimeout(function(){ modal.classList.add('show'); }, 50);
+};
+
+// ============================================
+// بستن مودال
+// ============================================
+window.closeProfile = function() {
+    var modal = document.getElementById('profileModalOverlay');
+    if(!modal) return;
+    modal.style.opacity = '0';
+    setTimeout(function(){ modal.remove(); }, 300);
+};
+
+// ============================================
+// تعویض تب
+// ============================================
+window.switchProfileTab = function(tab) {
+    document.querySelectorAll('.profile-tab').forEach(function(t){ t.classList.remove('active'); });
+    document.querySelectorAll('.profile-tab-content').forEach(function(c){ c.classList.remove('active'); });
+
+    var btn = document.querySelector('.profile-tab[onclick*="\'' + tab + '\'"]');
+    if(btn) btn.classList.add('active');
+
+    var content = document.getElementById('ptab-' + tab);
+    if(content) content.classList.add('active');
+};
+
+// ============================================
+// انتخاب آواتار
+// ============================================
+window.pickAvatar = function(avatar, el) {
+    document.querySelectorAll('.avatar-option').forEach(function(a){ a.classList.remove('selected'); });
+    el.classList.add('selected');
+
+    var profile = getProfile();
+    profile.avatar = avatar;
+    saveProfile(profile);
+
+    // آپدیت آواتار بزرگ
+    var big = document.querySelector('.profile-avatar-big');
+    if(big) {
+        big.childNodes[0].nodeValue = avatar;
+    }
+
+    // آپدیت دکمه بالای صفحه
+    updateAvatarButton();
+
+    if(typeof showNotification === 'function') {
+        showNotification('✅ آواتار تغییر کرد!', 'success');
+    }
+};
+
+// ============================================
+// ذخیره تغییرات
+// ============================================
+window.saveProfileChanges = function() {
+    var profile = getProfile();
+    var bio = document.getElementById('editBio').value.trim();
+    var role = document.getElementById('editRole').value.trim();
+    var country = document.getElementById('editCountry').value.trim();
+
+    profile.bio = bio || 'کاربر پنل DARK PANEL';
+    profile.role = role || 'کاربر عادی';
+    profile.favoriteCountry = country || '🌍';
+
+    saveProfile(profile);
+
+    if(typeof showNotification === 'function') {
+        showNotification('✅ پروفایل ذخیره شد!', 'success');
+    }
+
+    setTimeout(function(){
+        closeProfile();
+        setTimeout(openProfile, 300);
+    }, 500);
+};
+
+// ============================================
+// خروج از پروفایل
+// ============================================
+window.doLogoutFromProfile = function() {
+    if(confirm('آیا مطمئنید میخواهید خارج شوید؟')) {
+        closeProfile();
+        setTimeout(function(){
+            if(typeof logout === 'function') logout();
+        }, 300);
+    }
+};
+
+// ============================================
+// دستاوردها
+// ============================================
+function calculateAchievements(configs, active, days) {
+    var list = [
+        { icon: '🎯', name: 'اولین قدم', desc: 'اولین کانفیگ ساخته شد', unlocked: configs >= 1 },
+        { icon: '🚀', name: 'سازنده', desc: '5 کانفیگ ساخته شد', unlocked: configs >= 5 },
+        { icon: '⭐', name: 'حرفه‌ای', desc: '10 کانفیگ ساخته شد', unlocked: configs >= 10 },
+        { icon: '👑', name: 'استاد', desc: '25 کانفیگ ساخته شد', unlocked: configs >= 25 },
+        { icon: '💎', name: 'افسانه‌ای', desc: '50 کانفیگ ساخته شد', unlocked: configs >= 50 },
+        { icon: '🔥', name: 'داغ', desc: '5 کانفیگ فعال', unlocked: active >= 5 },
+        { icon: '📅', name: 'وفادار', desc: '7 روز عضو', unlocked: days >= 7 },
+        { icon: '🎖️', name: 'کهنه‌کار', desc: '30 روز عضو', unlocked: days >= 30 },
+        { icon: '🏆', name: 'قهرمان', desc: '90 روز عضو', unlocked: days >= 90 },
+    ];
+    return {
+        list: list,
+        unlocked: list.filter(function(a){ return a.unlocked; }).length,
+        total: list.length
+    };
+}
+
+// ============================================
+// سطح کاربر
+// ============================================
+function getUserLevel(configs) {
+    if(configs >= 50) return '💎 افسانه‌ای';
+    if(configs >= 25) return '👑 استاد';
+    if(configs >= 10) return '⭐ حرفه‌ای';
+    if(configs >= 5) return '🚀 متوسط';
+    if(configs >= 1) return '🎯 تازه‌کار';
+    return '🌱 مبتدی';
+}
+
+// ============================================
+// فرمت تاریخ
+// ============================================
+function formatDateSimple(iso) {
+    try {
+        var d = new Date(iso);
+        return d.toLocaleDateString('fa-IR');
+    } catch(e) { return '-'; }
+}
+
+// ============================================
+// اجرا
+// ============================================
+function initProfile() {
+    var dashboard = document.getElementById('dashboard');
+    if(dashboard && dashboard.style.display === 'block') {
+        createAvatarButton();
+    }
+}
+
+// اجرا در چند مرحله
+setTimeout(initProfile, 500);
+setTimeout(initProfile, 1500);
+setTimeout(initProfile, 3000);
+
+// چک هر 2 ثانیه
+setInterval(function(){
+    var dashboard = document.getElementById('dashboard');
+    if(dashboard && dashboard.style.display === 'block' && !document.getElementById('profileAvatarBtn')) {
+        createAvatarButton();
+    }
+}, 2000);
+
+// هوک روی login
+var _origLog = window.login;
+if(typeof _origLog === 'function') {
+    window.login = function() {
+        _origLog();
+        setTimeout(createAvatarButton, 500);
+        setTimeout(createAvatarButton, 1500);
+    };
+}
+
+var _origDoLog = window.doLogin;
+if(typeof _origDoLog === 'function') {
+    window.doLogin = function() {
+        _origDoLog();
+        setTimeout(createAvatarButton, 500);
+        setTimeout(createAvatarButton, 1500);
+    };
+}
+
+// هوک روی logout
+var _origLo = window.logout;
+if(typeof _origLo === 'function') {
+    window.logout = function() {
+        var btn = document.getElementById('profileAvatarBtn');
+        if(btn) btn.remove();
+        _origLo();
+    };
+}
+
+console.log('✅ Profile module loaded');
+})();
+</script>
+<style>
+/* ============================================
+   فیکس موقعیت آواتار - بالا سمت راست
+   با اولویت بالا (!important)
+============================================ */
+#profileAvatarBtn,
+.profile-avatar-btn {
+    position: fixed !important;
+    top: 15px !important;
+    right: 15px !important;
+    left: auto !important;
+    bottom: auto !important;
+    z-index: 10000 !important;
+    width: 55px !important;
+    height: 55px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #7c3aed, #9333ea, #a855f7) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 26px !important;
+    cursor: pointer !important;
+    box-shadow:
+        0 5px 0 #5b21b6,
+        0 10px 25px rgba(124, 58, 237, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.2),
+        0 0 30px rgba(124, 58, 237, 0.2) !important;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    border: 3px solid rgba(255, 255, 255, 0.1) !important;
+    user-select: none !important;
+    color: white !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+#profileAvatarBtn:hover,
+.profile-avatar-btn:hover {
+    transform: translateY(-3px) scale(1.08) !important;
+    box-shadow:
+        0 8px 0 #5b21b6,
+        0 15px 35px rgba(124, 58, 237, 0.55),
+        0 0 50px rgba(124, 58, 237, 0.4) !important;
+}
+
+#profileAvatarBtn:active,
+.profile-avatar-btn:active {
+    transform: translateY(2px) scale(0.95) !important;
+}
+
+/* حلقه پالس */
+#profileAvatarBtn::before,
+.profile-avatar-btn::before {
+    content: '' !important;
+    position: absolute !important;
+    inset: -5px !important;
+    border-radius: 50% !important;
+    border: 2px solid rgba(124, 58, 237, 0.4) !important;
+    animation: avatarRing 2s ease-out infinite !important;
+    pointer-events: none !important;
+}
+
+@keyframes avatarRing {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.4); opacity: 0; }
+}
+
+/* نقطه آنلاین */
+#profileAvatarBtn .online-dot,
+.profile-avatar-btn .online-dot {
+    position: absolute !important;
+    bottom: 2px !important;
+    right: 2px !important;
+    width: 14px !important;
+    height: 14px !important;
+    background: #10b981 !important;
+    border: 2px solid var(--bg-dark) !important;
+    border-radius: 50% !important;
+    box-shadow: 0 0 8px #10b981 !important;
+    animation: onlinePulse 2s ease-in-out infinite !important;
+}
+
+@keyframes onlinePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* ============================================
+   جابجایی تلگرام به پایین راست (برای نگرفتن جای آواتار)
+============================================ */
+.telegram-float {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 20px !important;
+    left: auto !important;
+    right: 20px !important;
+    z-index: 9997 !important;
+}
+
+/* ============================================
+   دکمه‌های تم و زبان به پایین چپ
+============================================ */
+.top-controls {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 20px !important;
+    left: 20px !important;
+    right: auto !important;
+    z-index: 9997 !important;
+    display: flex !important;
+    gap: 8px !important;
+    flex-direction: row !important;
+}
+
+/* ============================================
+   موبایل - تنظیم موقعیت
+============================================ */
+@media (max-width: 768px) {
+    #profileAvatarBtn,
+    .profile-avatar-btn {
+        width: 45px !important;
+        height: 45px !important;
+        font-size: 22px !important;
+        top: 12px !important;
+        right: 12px !important;
+    }
+
+    #profileAvatarBtn .online-dot,
+    .profile-avatar-btn .online-dot {
+        width: 12px !important;
+        height: 12px !important;
+    }
+
+    .telegram-float {
+        bottom: 15px !important;
+        right: 15px !important;
+    }
+
+    .top-controls {
+        bottom: 15px !important;
+        left: 15px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .telegram-float a {
+        padding: 7px 14px !important;
+        font-size: 11px !important;
+    }
+    .telegram-float a svg {
+        width: 16px !important;
+        height: 16px !important;
+    }
+    .top-controls .control-btn {
+        padding: 6px 12px !important;
+        font-size: 11px !important;
+    }
+}
+
+/* ============================================
+   فیکس مودال پروفایل - وسط صفحه ثابت
+============================================ */
+.profile-modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 100000 !important;
+}
+
+.profile-modal-overlay .profile-modal {
+    position: relative !important;
+    margin: auto !important;
+}
+
+/* ============================================
+   جلوگیری از تکون خوردن پنل هنگام باز شدن مودال
+============================================ */
+body.modal-open {
+    overflow: hidden !important;
+    padding-right: 0 !important;
+}
+
+/* اسکرول‌بار همیشه ثابت */
+html {
+    overflow-y: scroll !important;
+    scrollbar-gutter: stable !important;
+}
+
+body {
+    overflow-x: hidden !important;
+}
+
+/* ============================================
+   فاصله‌گیری برای اینکه آواتار روی محتوا نیفته
+============================================ */
+.topbar {
+    padding-right: 80px !important;
+}
+
+@media (max-width: 768px) {
+    .topbar {
+        padding-right: 60px !important;
+    }
+}
+
+/* پنل ثابت بشه */
+.dashboard {
+    position: relative !important;
+}
+
+.sidebar {
+    position: fixed !important;
+}
+
+.main-content {
+    position: relative !important;
+}
+</style>
+
+<script>
+(function(){
+'use strict';
+
+// ============================================
+// جلوگیری از تکون خوردن هنگام باز شدن مودال
+// ============================================
+function fixModalScroll() {
+    var originalOpen = window.openProfile;
+    var originalClose = window.closeProfile;
+
+    if(typeof originalOpen === 'function') {
+        window.openProfile = function() {
+            document.body.classList.add('modal-open');
+            originalOpen.apply(this, arguments);
+        };
+    }
+
+    if(typeof originalClose === 'function') {
+        window.closeProfile = function() {
+            document.body.classList.remove('modal-open');
+            originalClose.apply(this, arguments);
+        };
+    }
+}
+
+// ============================================
+// اطمینان از موقعیت درست آواتار
+// ============================================
+function forceAvatarPosition() {
+    var btn = document.getElementById('profileAvatarBtn');
+    if(btn) {
+        btn.style.cssText =
+            'position:fixed !important;' +
+            'top:15px !important;' +
+            'right:15px !important;' +
+            'left:auto !important;' +
+            'bottom:auto !important;' +
+            'z-index:10000 !important;' +
+            'width:55px !important;' +
+            'height:55px !important;' +
+            'border-radius:50% !important;' +
+            'background:linear-gradient(135deg,#7c3aed,#9333ea,#a855f7) !important;' +
+            'display:flex !important;' +
+            'align-items:center !important;' +
+            'justify-content:center !important;' +
+            'font-size:26px !important;' +
+            'cursor:pointer !important;' +
+            'box-shadow:0 5px 0 #5b21b6, 0 10px 25px rgba(124,58,237,0.4), 0 0 30px rgba(124,58,237,0.2) !important;' +
+            'border:3px solid rgba(255,255,255,0.1) !important;' +
+            'color:white !important;';
+
+        // در موبایل کوچکتر
+        if(window.innerWidth <= 768) {
+            btn.style.width = '45px !important';
+            btn.style.height = '45px !important';
+            btn.style.top = '12px !important';
+            btn.style.right = '12px !important';
+            btn.style.fontSize = '22px !important';
+        }
+    }
+}
+
+// ============================================
+// اجرا
+// ============================================
+setTimeout(fixModalScroll, 1000);
+setTimeout(fixAvatarPosition, 500);
+setTimeout(fixAvatarPosition, 1500);
+setTimeout(fixAvatarPosition, 3000);
+
+// چک هر 3 ثانیه
+setInterval(function(){
+    var btn = document.getElementById('profileAvatarBtn');
+    if(btn) {
+        // اطمینان از موقعیت
+        var style = window.getComputedStyle(btn);
+        if(style.right === 'auto' || style.left !== 'auto') {
+            btn.style.setProperty('right', '15px', 'important');
+            btn.style.setProperty('left', 'auto', 'important');
+            btn.style.setProperty('top', '15px', 'important');
+            btn.style.setProperty('bottom', 'auto', 'important');
+        }
+    }
+}, 3000);
+
+// تعریف تابع
+function fixAvatarPosition() {
+    forceAvatarPosition();
+}
+
+// در تغییر اندازه صفحه هم اجرا کن
+window.addEventListener('resize', function(){
+    setTimeout(fixAvatarPosition, 100);
+});
+
+console.log('✅ Avatar position fixed to top-right');
+})();
+</script>
+<style>
+/* ============================================
+   فیکس صفحه - اجازه اسکرول عادی
+============================================ */
+html, body {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    scrollbar-gutter: auto !important;
+    padding-right: 0 !important;
+    height: auto !important;
+    min-height: 100vh !important;
+}
+
+body.modal-open {
+    overflow: auto !important;
+    padding-right: 0 !important;
+}
+
+/* اسکرول‌بار عادی */
+html {
+    scrollbar-width: auto !important;
+}
+
+body {
+    position: static !important;
+}
+
+/* ============================================
+   آواتار پروفایل - بالا سمت راست (ثابت میمونه)
+============================================ */
+#profileAvatarBtn,
+.profile-avatar-btn {
+    position: fixed !important;
+    top: 15px !important;
+    right: 15px !important;
+    left: auto !important;
+    bottom: auto !important;
+    z-index: 10000 !important;
+}
+
+/* ============================================
+   دکمه تلگرام - بالا سمت چپ
+============================================ */
+.telegram-float {
+    position: fixed !important;
+    top: 15px !important;
+    left: 15px !important;
+    right: auto !important;
+    bottom: auto !important;
+    z-index: 9998 !important;
+}
+
+.telegram-float .pulse-ring {
+    display: none !important;
+}
+
+.telegram-float a {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 8px 18px !important;
+    background: linear-gradient(135deg, #0088cc, #00aaff) !important;
+    color: #fff !important;
+    text-decoration: none !important;
+    border-radius: 50px !important;
+    font-family: 'Vazirmatn', sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    box-shadow:
+        0 3px 0 #006daa,
+        0 6px 15px rgba(0, 136, 204, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    white-space: nowrap !important;
+    animation: none !important;
+}
+
+.telegram-float a:hover {
+    transform: translateY(-2px) scale(1.03) !important;
+    box-shadow:
+        0 5px 0 #006daa,
+        0 10px 20px rgba(0, 136, 204, 0.4) !important;
+}
+
+.telegram-float a:active {
+    transform: translateY(1px) scale(0.98) !important;
+}
+
+.telegram-float a svg {
+    width: 18px !important;
+    height: 18px !important;
+    fill: #fff !important;
+    flex-shrink: 0 !important;
+}
+
+/* ============================================
+   دکمه‌های تم و زبان - پایین سمت راست
+============================================ */
+.top-controls {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 20px !important;
+    left: auto !important;
+    right: 20px !important;
+    z-index: 9998 !important;
+    display: flex !important;
+    gap: 8px !important;
+    flex-direction: row !important;
+}
+
+/* ============================================
+   موبایل - تنظیم دقیق موقعیت
+============================================ */
+@media (max-width: 768px) {
+    #profileAvatarBtn,
+    .profile-avatar-btn {
+        top: 12px !important;
+        right: 12px !important;
+    }
+
+    .telegram-float {
+        top: 12px !important;
+        left: 12px !important;
+    }
+
+    .telegram-float a {
+        padding: 7px 14px !important;
+        font-size: 11px !important;
+    }
+
+    .telegram-float a svg {
+        width: 16px !important;
+        height: 16px !important;
+    }
+
+    .top-controls {
+        bottom: 15px !important;
+        right: 15px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .telegram-float a {
+        padding: 6px 12px !important;
+        font-size: 10px !important;
+    }
+
+    .top-controls .control-btn {
+        padding: 6px 12px !important;
+        font-size: 11px !important;
+    }
+}
+
+/* ============================================
+   فاصله برای اینکه دکمه‌ها روی محتوا نیفتن
+============================================ */
+.topbar {
+    padding-left: 180px !important;
+    padding-right: 80px !important;
+}
+
+@media (max-width: 768px) {
+    .topbar {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        padding-top: 70px !important;
+    }
+}
+
+/* ============================================
+   مودال پروفایل - بدون بلوکه کردن اسکرول
+============================================ */
+.profile-modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 100000 !important;
+}
+
+.profile-modal-overlay.show {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.profile-modal {
+    position: relative !important;
+    margin: auto !important;
+    max-height: 92vh !important;
+    overflow-y: auto !important;
+}
+</style>
+
+<script>
+(function(){
+'use strict';
+
+// ============================================
+// حذف تمام محدودیت‌های اسکرول
+// ============================================
+function unlockScroll() {
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+    document.body.style.position = '';
+    document.body.style.height = '';
+    document.documentElement.style.overflow = '';
+    document.documentElement.style.paddingRight = '';
+    document.documentElement.style.height = '';
+}
+
+// اجرا هر ثانیه برای اطمینان
+setInterval(unlockScroll, 1000);
+
+// اجرای اولیه
+unlockScroll();
+setTimeout(unlockScroll, 500);
+setTimeout(unlockScroll, 1500);
+
+// ============================================
+// حذف تابع‌های قبلی که اسکرول رو قفل میکردن
+// ============================================
+if(typeof window.openProfile === 'function') {
+    var _origOpenProfile = window.openProfile;
+    window.openProfile = function() {
+        _origOpenProfile.apply(this, arguments);
+        setTimeout(function(){
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }, 50);
+    };
+}
+
+// ============================================
+// اطمینان از موقعیت درست دکمه‌ها
+// ============================================
+function fixPositions() {
+    // آواتار
+    var avatar = document.getElementById('profileAvatarBtn');
+    if(avatar) {
+        avatar.style.setProperty('position', 'fixed', 'important');
+        avatar.style.setProperty('top', '15px', 'important');
+        avatar.style.setProperty('right', '15px', 'important');
+        avatar.style.setProperty('left', 'auto', 'important');
+        avatar.style.setProperty('bottom', 'auto', 'important');
+        avatar.style.setProperty('z-index', '10000', 'important');
+    }
+
+    // تلگرام
+    var telegram = document.querySelector('.telegram-float');
+    if(telegram) {
+        telegram.style.setProperty('position', 'fixed', 'important');
+        telegram.style.setProperty('top', '15px', 'important');
+        telegram.style.setProperty('left', '15px', 'important');
+        telegram.style.setProperty('right', 'auto', 'important');
+        telegram.style.setProperty('bottom', 'auto', 'important');
+        telegram.style.setProperty('z-index', '9998', 'important');
+    }
+
+    // دکمه‌های تم و زبان
+    var controls = document.querySelector('.top-controls');
+    if(controls) {
+        controls.style.setProperty('position', 'fixed', 'important');
+        controls.style.setProperty('bottom', '20px', 'important');
+        controls.style.setProperty('right', '20px', 'important');
+        controls.style.setProperty('top', 'auto', 'important');
+        controls.style.setProperty('left', 'auto', 'important');
+        controls.style.setProperty('z-index', '9998', 'important');
+    }
+
+    // موبایل
+    if(window.innerWidth <= 768) {
+        if(avatar) {
+            avatar.style.setProperty('top', '12px', 'important');
+            avatar.style.setProperty('right', '12px', 'important');
+        }
+        if(telegram) {
+            telegram.style.setProperty('top', '12px', 'important');
+            telegram.style.setProperty('left', '12px', 'important');
+        }
+        if(controls) {
+            controls.style.setProperty('bottom', '15px', 'important');
+            controls.style.setProperty('right', '15px', 'important');
+        }
+    }
+}
+
+// اجرا در چند مرحله
+setTimeout(fixPositions, 500);
+setTimeout(fixPositions, 1500);
+setTimeout(fixPositions, 3000);
+setInterval(fixPositions, 3000);
+
+// در تغییر اندازه
+window.addEventListener('resize', function(){
+    setTimeout(fixPositions, 100);
+});
+
+console.log('✅ Layout fixed: Avatar top-right, Telegram top-left, Theme/Lang bottom-right');
+console.log('✅ Scroll unlocked');
+})();
+</script>
+<style>
+/* ============================================
+   مودال کره زمین سه بعدی
+============================================ */
+.globe-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(15px);
+    z-index: 100000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.globe-modal-overlay.show {
+    display: flex;
+}
+
+.globe-modal {
+    background:
+        radial-gradient(circle at top, rgba(59, 130, 246, 0.15), transparent 60%),
+        linear-gradient(145deg, #0a0a1a, #0f1a2e);
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    border-radius: 24px;
+    width: 650px;
+    max-width: 95%;
+    max-height: 92vh;
+    overflow: hidden;
+    position: relative;
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.7),
+        0 0 80px rgba(59, 130, 246, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    animation: globeSlideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes globeSlideUp {
+    from { opacity: 0; transform: translateY(50px) scale(0.9); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.globe-modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #10b981, #3b82f6, #a855f7, #3b82f6, #10b981);
+    background-size: 200% 100%;
+    animation: borderShine 3s linear infinite;
+}
+
+@keyframes borderShine {
+    to { background-position: -200% 0; }
+}
+
+/* هدر مودال */
+.globe-header {
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.15);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.globe-header-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.globe-header-flag {
+    font-size: 40px;
+    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.5));
+    animation: flagBounce 2s ease-in-out infinite;
+}
+
+@keyframes flagBounce {
+    0%, 100% { transform: scale(1) rotate(0); }
+    50% { transform: scale(1.1) rotate(-5deg); }
+}
+
+.globe-header-text h3 {
+    font-size: 22px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #93c5fd, #60a5fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 4px;
+}
+
+.globe-header-text p {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.globe-close-btn {
+    width: 36px;
+    height: 36px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 50%;
+    color: #fca5a5;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    flex-shrink: 0;
+}
+
+.globe-close-btn:hover {
+    background: rgba(239, 68, 68, 0.3);
+    transform: rotate(90deg) scale(1.1);
+}
+
+/* کانتینر کره زمین */
+.globe-container {
+    padding: 30px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background:
+        radial-gradient(circle at center, rgba(59, 130, 246, 0.08), transparent 70%),
+        radial-gradient(ellipse at top, rgba(0, 0, 0, 0.5), transparent 60%);
+    min-height: 380px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ستاره‌های پس‌زمینه */
+.globe-stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.globe-star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: starTwinkle infinite;
+    opacity: 0.6;
+}
+
+@keyframes starTwinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.5); }
+}
+
+/* کره زمین */
+.globe-3d {
+    width: 300px;
+    height: 300px;
+    position: relative;
+    perspective: 1200px;
+    transform-style: preserve-3d;
+}
+
+.globe-sphere {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: relative;
+    background:
+        radial-gradient(circle at 30% 30%,
+            #4a90e2 0%,
+            #2e5aa8 20%,
+            #1e3a70 40%,
+            #0f1e40 70%,
+            #050b1e 100%
+        );
+    box-shadow:
+        inset 20px -20px 60px rgba(0, 0, 0, 0.7),
+        inset -20px 20px 40px rgba(59, 130, 246, 0.15),
+        0 0 60px rgba(59, 130, 246, 0.4),
+        0 0 100px rgba(59, 130, 246, 0.2);
+    animation: globeRotate 30s linear infinite;
+    transform-style: preserve-3d;
+}
+
+@keyframes globeRotate {
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
+}
+
+/* قاره‌ها */
+.globe-continent {
+    position: absolute;
+    background: radial-gradient(circle, rgba(74, 222, 128, 0.5), rgba(34, 197, 94, 0.2));
+    border-radius: 50%;
+    opacity: 0.7;
+}
+
+/* شبکه خطوط طول و عرض */
+.globe-grid {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.globe-grid::before,
+.globe-grid::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+.globe-grid::before {
+    background:
+        linear-gradient(0deg, transparent 49%, rgba(59, 130, 246, 0.15) 50%, transparent 51%),
+        linear-gradient(90deg, transparent 49%, rgba(59, 130, 246, 0.15) 50%, transparent 51%);
+}
+
+.globe-grid::after {
+    background:
+        repeating-linear-gradient(0deg, transparent, transparent 25px, rgba(59, 130, 246, 0.08) 25px, rgba(59, 130, 246, 0.08) 26px),
+        repeating-linear-gradient(90deg, transparent, transparent 25px, rgba(59, 130, 246, 0.08) 25px, rgba(59, 130, 246, 0.08) 26px);
+}
+
+/* هاله دور کره */
+.globe-atmosphere {
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+        transparent 65%,
+        rgba(59, 130, 246, 0.15) 70%,
+        rgba(59, 130, 246, 0.3) 75%,
+        transparent 85%
+    );
+    animation: atmospherePulse 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes atmospherePulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+}
+
+/* پین موقعیت */
+.globe-pin-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    z-index: 10;
+    transform-style: preserve-3d;
+    animation: pinFloat 3s ease-in-out infinite;
+}
+
+@keyframes pinFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.globe-pin {
+    position: absolute;
+    transform: translate(-50%, -100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: pinDrop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes pinDrop {
+    0% { transform: translate(-50%, -300%) scale(0); opacity: 0; }
+    60% { transform: translate(-50%, -80%) scale(1.2); opacity: 1; }
+    100% { transform: translate(-50%, -100%) scale(1); opacity: 1; }
+}
+
+.globe-pin-flag {
+    font-size: 32px;
+    filter:
+        drop-shadow(0 5px 10px rgba(0, 0, 0, 0.7))
+        drop-shadow(0 0 15px rgba(239, 68, 68, 0.8));
+    margin-bottom: 3px;
+    animation: flagWave 2s ease-in-out infinite;
+    z-index: 3;
+}
+
+@keyframes flagWave {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-8deg); }
+    75% { transform: rotate(8deg); }
+}
+
+.globe-pin-marker {
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle at 30% 30%, #ff6b6b, #ef4444, #b91c1c);
+    border: 2px solid white;
+    border-radius: 50%;
+    box-shadow:
+        0 0 15px rgba(239, 68, 68, 0.8),
+        0 0 30px rgba(239, 68, 68, 0.4),
+        0 3px 8px rgba(0, 0, 0, 0.5);
+    animation: markerPulse 1.5s ease-in-out infinite;
+    position: relative;
+}
+
+@keyframes markerPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(239, 68, 68, 0.8), 0 0 30px rgba(239, 68, 68, 0.4); }
+    50% { transform: scale(1.2); box-shadow: 0 0 20px rgba(239, 68, 68, 1), 0 0 40px rgba(239, 68, 68, 0.6); }
+}
+
+.globe-pin-marker::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border: 2px solid rgba(239, 68, 68, 0.5);
+    border-radius: 50%;
+    animation: markerRing 2s ease-out infinite;
+}
+
+.globe-pin-marker::after {
+    content: '';
+    position: absolute;
+    inset: -15px;
+    border: 2px solid rgba(239, 68, 68, 0.3);
+    border-radius: 50%;
+    animation: markerRing 2s ease-out infinite 0.5s;
+}
+
+@keyframes markerRing {
+    0% { transform: scale(0.8); opacity: 1; }
+    100% { transform: scale(2); opacity: 0; }
+}
+
+.globe-pin-shadow {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 15px;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    filter: blur(2px);
+}
+
+/* اطلاعات پایین */
+.globe-info-panel {
+    padding: 20px 25px 25px;
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.4));
+    border-top: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+.globe-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.globe-info-item {
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: center;
+}
+
+.globe-info-item .info-icon {
+    font-size: 20px;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.globe-info-item .info-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-bottom: 3px;
+    font-weight: 600;
+}
+
+.globe-info-item .info-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: #93c5fd;
+    direction: ltr;
+}
+
+.globe-coordinates {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px dashed rgba(59, 130, 246, 0.3);
+    border-radius: 10px;
+    padding: 10px 15px;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    color: #6ee7b7;
+    font-size: 12px;
+    font-weight: 700;
+    direction: ltr;
+    letter-spacing: 1px;
+}
+
+.globe-coordinates .coord-label {
+    color: var(--text-dim);
+    margin-left: 8px;
+}
+
+/* Light theme */
+body.light-theme .globe-modal {
+    background:
+        radial-gradient(circle at top, rgba(59, 130, 246, 0.08), transparent 60%),
+        linear-gradient(145deg, #1a1a2e, #12121a) !important;
+    /* برای بهتر دیده شدن کره، تم تیره میمونه */
+}
+
+@media (max-width: 640px) {
+    .globe-3d {
+        width: 240px;
+        height: 240px;
+    }
+    .globe-header-text h3 {
+        font-size: 18px;
+    }
+    .globe-header-flag {
+        font-size: 32px;
+    }
+    .globe-container {
+        min-height: 300px;
+        padding: 20px 15px;
+    }
+}
+</style>
+
+<script>
+(function(){
+'use strict';
+
+// ============================================
+// مختصات جغرافیایی کشورها
+// ============================================
+var COUNTRY_COORDS = {
+    "DE": { lat: 51.1657, lng: 10.4515, capital: "برلین", continent: "اروپا" },
+    "GB": { lat: 55.3781, lng: -3.4360, capital: "لندن", continent: "اروپا" },
+    "FR": { lat: 46.2276, lng: 2.2137, capital: "پاریس", continent: "اروپا" },
+    "NL": { lat: 52.1326, lng: 5.2913, capital: "آمستردام", continent: "اروپا" },
+    "SE": { lat: 60.1282, lng: 18.6435, capital: "استکهلم", continent: "اروپا" },
+    "NO": { lat: 60.4720, lng: 8.4689, capital: "اسلو", continent: "اروپا" },
+    "DK": { lat: 56.2639, lng: 9.5018, capital: "کپنهاگ", continent: "اروپا" },
+    "FI": { lat: 61.9241, lng: 25.7482, capital: "هلسینکی", continent: "اروپا" },
+    "ES": { lat: 40.4637, lng: -3.7492, capital: "مادرید", continent: "اروپا" },
+    "IT": { lat: 41.8719, lng: 12.5674, capital: "رم", continent: "اروپا" },
+    "PT": { lat: 39.3999, lng: -8.2245, capital: "لیسبون", continent: "اروپا" },
+    "CH": { lat: 46.8182, lng: 8.2275, capital: "برن", continent: "اروپا" },
+    "AT": { lat: 47.5162, lng: 14.5501, capital: "وین", continent: "اروپا" },
+    "BE": { lat: 50.5039, lng: 4.4699, capital: "بروکسل", continent: "اروپا" },
+    "LU": { lat: 49.8153, lng: 6.1296, capital: "لوکزامبورگ", continent: "اروپا" },
+    "IE": { lat: 53.4129, lng: -8.2439, capital: "دوبلین", continent: "اروپا" },
+    "IS": { lat: 64.9631, lng: -19.0208, capital: "ریکیاویک", continent: "اروپا" },
+    "PL": { lat: 51.9194, lng: 19.1451, capital: "ورشو", continent: "اروپا" },
+    "CZ": { lat: 49.8175, lng: 15.4730, capital: "پراگ", continent: "اروپا" },
+    "SK": { lat: 48.6690, lng: 19.6990, capital: "براتیسلاوا", continent: "اروپا" },
+    "HU": { lat: 47.1625, lng: 19.5033, capital: "بوداپست", continent: "اروپا" },
+    "RO": { lat: 45.9432, lng: 24.9668, capital: "بخارست", continent: "اروپا" },
+    "BG": { lat: 42.7339, lng: 25.4858, capital: "صوفیه", continent: "اروپا" },
+    "HR": { lat: 45.1000, lng: 15.2000, capital: "زاگرب", continent: "اروپا" },
+    "SI": { lat: 46.1512, lng: 14.9955, capital: "لیوبلیانا", continent: "اروپا" },
+    "RS": { lat: 44.0165, lng: 21.0059, capital: "بلگراد", continent: "اروپا" },
+    "ME": { lat: 42.7087, lng: 19.3744, capital: "پودگوریتسا", continent: "اروپا" },
+    "MK": { lat: 41.6086, lng: 21.7453, capital: "اسکوپیه", continent: "اروپا" },
+    "AL": { lat: 41.1533, lng: 20.1683, capital: "تیرانا", continent: "اروپا" },
+    "GR": { lat: 39.0742, lng: 21.8243, capital: "آتن", continent: "اروپا" },
+    "CY": { lat: 35.1264, lng: 33.4299, capital: "نیکوزیا", continent: "اروپا" },
+    "MT": { lat: 35.9375, lng: 14.3754, capital: "والتا", continent: "اروپا" },
+    "EE": { lat: 58.5953, lng: 25.0136, capital: "تالین", continent: "اروپا" },
+    "LV": { lat: 56.8796, lng: 24.6032, capital: "ریگا", continent: "اروپا" },
+    "LT": { lat: 55.1694, lng: 23.8813, capital: "ویلنیوس", continent: "اروپا" },
+    "UA": { lat: 48.3794, lng: 31.1656, capital: "کیف", continent: "اروپا" },
+    "MD": { lat: 47.4116, lng: 28.3699, capital: "کیشیناو", continent: "اروپا" },
+    "BY": { lat: 53.7098, lng: 27.9534, capital: "مینسک", continent: "اروپا" },
+    "RU": { lat: 61.5240, lng: 105.3188, capital: "مسکو", continent: "اروپا" },
+    "GE": { lat: 42.3154, lng: 43.3569, capital: "تفلیس", continent: "اروپا" },
+    "AM": { lat: 40.0691, lng: 45.0382, capital: "ایروان", continent: "اروپا" },
+    "AZ": { lat: 40.1431, lng: 47.5769, capital: "باکو", continent: "اروپا" },
+    "BA": { lat: 43.9159, lng: 17.6791, capital: "سارایوو", continent: "اروپا" },
+    "XK": { lat: 42.6026, lng: 20.9030, capital: "پریشتینا", continent: "اروپا" },
+    "MC": { lat: 43.7384, lng: 7.4246, capital: "موناکو", continent: "اروپا" },
+    "LI": { lat: 47.1660, lng: 9.5554, capital: "وادوز", continent: "اروپا" },
+    "AD": { lat: 42.5063, lng: 1.5218, capital: "آندورا لا ولا", continent: "اروپا" },
+    "SM": { lat: 43.9424, lng: 12.4578, capital: "سن مارینو", continent: "اروپا" },
+    "VA": { lat: 41.9029, lng: 12.4534, capital: "واتیکان", continent: "اروپا" },
+    "TR": { lat: 38.9637, lng: 35.2433, capital: "آنکارا", continent: "آسیا" },
+    "AE": { lat: 23.4241, lng: 53.8478, capital: "ابوظبی", continent: "آسیا" },
+    "KR": { lat: 35.9078, lng: 127.7669, capital: "سئول", continent: "آسیا" },
+    "QA": { lat: 25.3548, lng: 51.1839, capital: "دوحه", continent: "آسیا" },
+    "US": { lat: 37.0902, lng: -95.7129, capital: "واشنگتن", continent: "آمریکا شمالی" },
+    "BR": { lat: -14.2350, lng: -51.9253, capital: "برازیلیا", continent: "آمریکا جنوبی" },
+    "AR": { lat: -38.4161, lng: -63.6167, capital: "بوئنوس آیرس", continent: "آمریکا جنوبی" },
+    "CO": { lat: 4.5709, lng: -74.2973, capital: "بوگوتا", continent: "آمریکا جنوبی" },
+    "BH": { lat: 25.9304, lng: 50.6378, capital: "منامه", continent: "آسیا" },
+    "ZA": { lat: -30.5595, lng: 22.9375, capital: "پرتوریا", continent: "آفریقا" },
+    "BD": { lat: 23.6850, lng: 90.3563, capital: "داکا", continent: "آسیا" },
+    "PH": { lat: 12.8797, lng: 121.7740, capital: "مانیل", continent: "آسیا" }
+};
+
+// ============================================
+// نمایش کره زمین با موقعیت
+// ============================================
+window.showGlobeForLocation = function(code) {
+    if(typeof LOCATIONS_DB === 'undefined' || !LOCATIONS_DB[code]) return;
+
+    var loc = LOCATIONS_DB[code];
+    var coords = COUNTRY_COORDS[code] || { lat: 0, lng: 0, capital: 'نامشخص', continent: 'نامشخص' };
+
+    // حذف مودال قبلی
+    var oldModal = document.getElementById('globeModalOverlay');
+    if(oldModal) oldModal.remove();
+
+    // محاسبه موقعیت پین روی کره (تبدیل lat/lng به x/y)
+    var pinX = ((coords.lng + 180) / 360) * 100;
+    var pinY = ((90 - coords.lat) / 180) * 100;
+
+    // برای بصری‌سازی، پین رو در وسط کره قرار میدیم و کره چرخانه
+    var globeSize = 300;
+
+    // ساخت مودال
+    var modal = document.createElement('div');
+    modal.id = 'globeModalOverlay';
+    modal.className = 'globe-modal-overlay';
+    modal.onclick = function(e){ if(e.target === modal) closeGlobeModal(); };
+
+    var configsCount = loc.configs ? loc.configs.length : 0;
+    var vlessCount = 0, ssCount = 0;
+    if(loc.configs) {
+        loc.configs.forEach(function(c){
+            var v = typeof c === 'string' ? c : (c && c.value ? c.value : '');
+            if(v.indexOf('vless://') === 0) vlessCount++;
+            else if(v.indexOf('ss://') === 0) ssCount++;
+        });
+    }
+
+    modal.innerHTML =
+        '<div class="globe-modal">' +
+
+            '<div class="globe-header">' +
+                '<div class="globe-header-info">' +
+                    '<div class="globe-header-flag">' + loc.flag + '</div>' +
+                    '<div class="globe-header-text">' +
+                        '<h3>' + loc.name + '</h3>' +
+                        '<p>🌍 ' + coords.continent + ' • ' + code + '</p>' +
+                    '</div>' +
+                '</div>' +
+                '<button class="globe-close-btn" onclick="closeGlobeModal()">×</button>' +
+            '</div>' +
+
+            '<div class="globe-container">' +
+                '<div class="globe-stars" id="globeStars"></div>' +
+                '<div class="globe-3d">' +
+                    '<div class="globe-atmosphere"></div>' +
+                    '<div class="globe-sphere">' +
+                        '<div class="globe-grid"></div>' +
+                        // قاره‌ها (شکل تقریبی)
+                        '<div class="globe-continent" style="top:25%;left:35%;width:25%;height:20%;"></div>' + // اروپا
+                        '<div class="globe-continent" style="top:20%;left:15%;width:20%;height:30%;"></div>' + // آمریکا شمالی
+                        '<div class="globe-continent" style="top:50%;left:22%;width:15%;height:25%;"></div>' + // آمریکا جنوبی
+                        '<div class="globe-continent" style="top:35%;left:45%;width:20%;height:30%;"></div>' + // آفریقا
+                        '<div class="globe-continent" style="top:30%;left:60%;width:30%;height:25%;"></div>' + // آسیا
+                        '<div class="globe-continent" style="top:65%;left:70%;width:15%;height:12%;"></div>' + // اقیانوسیه
+                    '</div>' +
+                    '<div class="globe-pin-container">' +
+                        '<div class="globe-pin" style="left:0;top:0;">' +
+                            '<div class="globe-pin-flag">' + loc.flag + '</div>' +
+                            '<div class="globe-pin-marker"></div>' +
+                            '<div class="globe-pin-shadow"></div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+
+            '<div class="globe-info-panel">' +
+                '<div class="globe-info-grid">' +
+                    '<div class="globe-info-item">' +
+                        '<span class="info-icon">🏛️</span>' +
+                        '<div class="info-label">پایتخت</div>' +
+                        '<div class="info-value">' + coords.capital + '</div>' +
+                    '</div>' +
+                    '<div class="globe-info-item">' +
+                        '<span class="info-icon">🌐</span>' +
+                        '<div class="info-label">قاره</div>' +
+                        '<div class="info-value">' + coords.continent + '</div>' +
+                    '</div>' +
+                    '<div class="globe-info-item">' +
+                        '<span class="info-icon">📦</span>' +
+                        '<div class="info-label">کانفیگ</div>' +
+                        '<div class="info-value">' + configsCount + '</div>' +
+                    '</div>' +
+                '</div>' +
+
+                '<div class="globe-info-grid" style="margin-bottom:12px;">' +
+                    '<div class="globe-info-item">' +
+                        '<span class="info-icon">🛡️</span>' +
+                        '<div class="info-label">VLESS</div>' +
+                        '<div class="info-value" style="color:#6ee7b7;">' + vlessCount + '</div>' +
+                    '</div>' +
+                    '<div class="globe-info-item">' +
+                        '<span class="info-icon">🌊</span>' +
+                        '<div class="info-label">Shadowsocks</div>' +
+                        '<div class="info-value">' + ssCount + '</div>' +
+                    '</div>' +
+                '</div>' +
+
+                '<div class="globe-coordinates">' +
+                    '<span class="coord-label">📍 مختصات:</span>' +
+                    'Lat ' + coords.lat.toFixed(4) + '° | Lng ' + coords.lng.toFixed(4) + '°' +
+                '</div>' +
+            '</div>' +
+
+        '</div>';
+
+    document.body.appendChild(modal);
+
+    // ساخت ستاره‌ها
+    setTimeout(function(){
+        var starsContainer = document.getElementById('globeStars');
+        if(starsContainer) {
+            for(var i = 0; i < 40; i++) {
+                var star = document.createElement('div');
+                star.className = 'globe-star';
+                var size = Math.random() * 2 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                star.style.animationDelay = (Math.random() * 3) + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+    }, 100);
+
+    // نمایش با انیمیشن
+    setTimeout(function(){ modal.classList.add('show'); }, 50);
+
+    // موقعیت‌دهی پین بر اساس مختصات
+    setTimeout(function(){
+        var pin = document.querySelector('.globe-pin');
+        if(pin) {
+            // تبدیل مختصات به موقعیت روی کره سه بعدی
+            // مرکز کره 150,150 است (وسط 300x300)
+            var radius = 130;
+            var latRad = (coords.lat * Math.PI) / 180;
+            var lngRad = (coords.lng * Math.PI) / 180;
+
+            var x = radius * Math.cos(latRad) * Math.sin(lngRad);
+            var y = -radius * Math.sin(latRad);
+
+            pin.style.left = x + 'px';
+            pin.style.top = y + 'px';
+        }
+    }, 200);
+};
+
+// ============================================
+// بستن مودال
+// ============================================
+window.closeGlobeModal = function() {
+    var modal = document.getElementById('globeModalOverlay');
+    if(!modal) return;
+    modal.style.opacity = '0';
+    setTimeout(function(){ modal.remove(); }, 300);
+};
+
+// ============================================
+// اضافه کردن onclick به لوکیشن‌های صفحه لوکیشن‌ها
+// ============================================
+function attachGlobeToLocations() {
+    var grid = document.getElementById('locationPageGrid');
+    if(!grid) return;
+
+    var items = grid.querySelectorAll('.location-item');
+    items.forEach(function(item){
+        // چک اگر قبلاً هوک شده
+        if(item.getAttribute('data-globe-attached') === 'yes') return;
+        item.setAttribute('data-globe-attached', 'yes');
+
+        var codeEl = item.querySelector('.country-code');
+        if(!codeEl) return;
+        var code = codeEl.textContent.trim();
+
+        // ذخیره onclick قبلی (اگه بود)
+        var oldOnclick = item.onclick;
+
+        item.style.cursor = 'pointer';
+        item.onclick = function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            showGlobeForLocation(code);
+        };
+
+        item.title = '🌍 مشاهده موقعیت روی کره زمین';
+    });
+}
+
+// ============================================
+// هوک روی showPage و رندرها
+// ============================================
+var _origShowPage = window.showPage;
+if(typeof _origShowPage === 'function') {
+    window.showPage = function(p, e) {
+        _origShowPage(p, e);
+        if(p === 'locations-page') {
+            setTimeout(attachGlobeToLocations, 100);
+            setTimeout(attachGlobeToLocations, 500);
+            setTimeout(attachGlobeToLocations, 1000);
+        }
+    };
+}
+
+var _origRenderPageGrid = window.renderLocationPageGrid;
+if(typeof _origRenderPageGrid === 'function') {
+    window.renderLocationPageGrid = function(f) {
+        _origRenderPageGrid(f);
+        setTimeout(attachGlobeToLocations, 100);
+        setTimeout(attachGlobeToLocations, 500);
+    };
+}
+
+// اجرا در چند مرحله
+setTimeout(attachGlobeToLocations, 1000);
+setTimeout(attachGlobeToLocations, 3000);
+
+// چک هر 3 ثانیه
+setInterval(function(){
+    var locPage = document.getElementById('locations-page');
+    if(locPage && locPage.classList.contains('active')) {
+        attachGlobeToLocations();
+    }
+}, 3000);
+
+// MutationObserver
+if(typeof MutationObserver !== 'undefined') {
+    setTimeout(function(){
+        var grid = document.getElementById('locationPageGrid');
+        if(grid) {
+            var obs = new MutationObserver(function(){
+                setTimeout(attachGlobeToLocations, 100);
+            });
+            obs.observe(grid, {childList: true, subtree: false});
+        }
+    }, 2000);
+}
+
+console.log('✅ 3D Globe module loaded');
+})();
+</script>
+<style>
+/* ============================================
+   بازنویسی کامل کره زمین - نسخه حرفه‌ای
+============================================ */
+
+.globe-container {
+    padding: 30px 20px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background:
+        radial-gradient(ellipse at center, rgba(59, 130, 246, 0.05), transparent 60%),
+        radial-gradient(circle at 20% 20%, rgba(147, 51, 234, 0.1), transparent 40%),
+        linear-gradient(180deg, #000814 0%, #001d3d 50%, #000814 100%) !important;
+    min-height: 420px !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* ستاره‌های حرفه‌ای */
+.globe-stars {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+    z-index: 1 !important;
+}
+
+.globe-star {
+    position: absolute !important;
+    background: white !important;
+    border-radius: 50% !important;
+    animation: starTwinkle infinite !important;
+    box-shadow: 0 0 4px white !important;
+}
+
+.globe-star.big {
+    box-shadow: 0 0 8px white, 0 0 12px rgba(255,255,255,0.5) !important;
+}
+
+@keyframes starTwinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.5); }
+}
+
+/* شهاب سنگ */
+.globe-meteor {
+    position: absolute !important;
+    width: 100px !important;
+    height: 1px !important;
+    background: linear-gradient(90deg, transparent, white, transparent) !important;
+    animation: meteorFall linear infinite !important;
+    opacity: 0 !important;
+}
+
+@keyframes meteorFall {
+    0% { transform: translate(0, 0) rotate(-45deg); opacity: 0; }
+    5% { opacity: 1; }
+    100% { transform: translate(300px, 300px) rotate(-45deg); opacity: 0; }
+}
+
+/* کره زمین - نسخه حرفه‌ای بدون چرخش */
+.globe-3d {
+    width: 320px !important;
+    height: 320px !important;
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+.globe-sphere {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
+    position: relative !important;
+    background:
+        /* Highlight اصلی */
+        radial-gradient(circle at 30% 25%,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(147, 197, 253, 0.3) 8%,
+            transparent 20%
+        ),
+        /* اقیانوس عمیق */
+        radial-gradient(circle at 50% 50%,
+            #1e40af 0%,
+            #1e3a8a 30%,
+            #172554 60%,
+            #0a1128 100%
+        );
+    box-shadow:
+        /* درون - سایه عمق */
+        inset -30px -30px 80px rgba(0, 0, 0, 0.8),
+        inset 20px 20px 40px rgba(147, 197, 253, 0.15),
+        inset -10px 10px 30px rgba(59, 130, 246, 0.2),
+        /* بیرون - درخشش */
+        0 0 60px rgba(59, 130, 246, 0.6),
+        0 0 100px rgba(59, 130, 246, 0.3),
+        0 0 140px rgba(147, 51, 234, 0.2),
+        /* سایه پایین */
+        0 50px 80px rgba(0, 0, 0, 0.5) !important;
+    animation: none !important;
+    overflow: hidden !important;
+}
+
+/* قاره‌ها - شکل واقعی‌تر */
+.globe-continent {
+    position: absolute !important;
+    background:
+        radial-gradient(ellipse at 30% 30%,
+            rgba(74, 222, 128, 0.8) 0%,
+            rgba(34, 197, 94, 0.6) 40%,
+            rgba(21, 128, 61, 0.4) 100%
+        ) !important;
+    border-radius: 40% 60% 55% 45% / 55% 45% 60% 40% !important;
+    box-shadow:
+        inset 2px 2px 8px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 8px rgba(0, 0, 0, 0.3) !important;
+    filter: blur(0.5px) !important;
+    opacity: 0.9 !important;
+}
+
+/* شبکه ظریف */
+.globe-grid-lines {
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+    opacity: 0.15 !important;
+}
+
+.globe-grid-lines::before,
+.globe-grid-lines::after {
+    content: '' !important;
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: 50% !important;
+}
+
+/* خطوط عرض جغرافیایی */
+.globe-latitude {
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    border-top: 1px solid rgba(147, 197, 253, 0.2) !important;
+    border-radius: 50% !important;
+    pointer-events: none !important;
+}
+
+/* خطوط طول جغرافیایی */
+.globe-longitude {
+    position: absolute !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    border-left: 1px solid rgba(147, 197, 253, 0.15) !important;
+    border-radius: 50% !important;
+    pointer-events: none !important;
+}
+
+/* هاله اطراف زمین */
+.globe-atmosphere {
+    position: absolute !important;
+    inset: -25px !important;
+    border-radius: 50% !important;
+    background:
+        radial-gradient(circle,
+            transparent 60%,
+            rgba(59, 130, 246, 0.15) 68%,
+            rgba(147, 197, 253, 0.35) 72%,
+            rgba(59, 130, 246, 0.2) 78%,
+            transparent 88%
+        ) !important;
+    animation: atmosphereGlow 4s ease-in-out infinite !important;
+    pointer-events: none !important;
+}
+
+@keyframes atmosphereGlow {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.03); }
+}
+
+/* لایه ابر */
+.globe-clouds {
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: 50% !important;
+    background:
+        radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.3) 0%, transparent 15%),
+        radial-gradient(ellipse at 70% 40%, rgba(255,255,255,0.2) 0%, transparent 12%),
+        radial-gradient(ellipse at 40% 60%, rgba(255,255,255,0.25) 0%, transparent 10%),
+        radial-gradient(ellipse at 80% 70%, rgba(255,255,255,0.2) 0%, transparent 13%),
+        radial-gradient(ellipse at 30% 80%, rgba(255,255,255,0.15) 0%, transparent 11%);
+    opacity: 0.6 !important;
+    pointer-events: none !important;
+    mix-blend-mode: screen !important;
+    animation: cloudsMove 40s linear infinite !important;
+}
+
+@keyframes cloudsMove {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* اشعه‌های نور */
+.globe-lens-flare {
+    position: absolute !important;
+    top: 15% !important;
+    left: 20% !important;
+    width: 100px !important;
+    height: 100px !important;
+    background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 60%) !important;
+    border-radius: 50% !important;
+    filter: blur(15px) !important;
+    pointer-events: none !important;
+    animation: lensFlarePulse 3s ease-in-out infinite !important;
+}
+
+@keyframes lensFlarePulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+/* ============================================
+   پین موقعیت حرفه‌ای
+============================================ */
+.globe-pin-container {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 0 !important;
+    height: 0 !important;
+    z-index: 20 !important;
+    pointer-events: none !important;
+}
+
+.globe-pin {
+    position: absolute !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    animation: pinBounce 2s ease-in-out infinite !important;
+    transform-origin: bottom center !important;
+}
+
+@keyframes pinBounce {
+    0%, 100% { transform: translate(-50%, -100%) translateY(0); }
+    50% { transform: translate(-50%, -100%) translateY(-8px); }
+}
+
+/* پرچم روی پین */
+.globe-pin-flag {
+    font-size: 36px !important;
+    filter:
+        drop-shadow(0 6px 12px rgba(0, 0, 0, 0.8))
+        drop-shadow(0 0 20px rgba(239, 68, 68, 0.9))
+        drop-shadow(0 0 40px rgba(239, 68, 68, 0.4)) !important;
+    margin-bottom: 4px !important;
+    animation: flagFlutter 1.5s ease-in-out infinite !important;
+    z-index: 3 !important;
+}
+
+@keyframes flagFlutter {
+    0%, 100% { transform: rotate(0) scale(1); }
+    25% { transform: rotate(-10deg) scale(1.05); }
+    75% { transform: rotate(10deg) scale(1.05); }
+}
+
+/* ماکر پین */
+.globe-pin-marker {
+    width: 22px !important;
+    height: 22px !important;
+    background:
+        radial-gradient(circle at 30% 30%,
+            #fca5a5 0%,
+            #ef4444 40%,
+            #b91c1c 80%,
+            #7f1d1d 100%
+        ) !important;
+    border: 3px solid white !important;
+    border-radius: 50% !important;
+    box-shadow:
+        0 0 20px rgba(239, 68, 68, 1),
+        0 0 40px rgba(239, 68, 68, 0.6),
+        0 0 60px rgba(239, 68, 68, 0.3),
+        0 4px 10px rgba(0, 0, 0, 0.6),
+        inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
+    animation: markerPulseNew 1.5s ease-in-out infinite !important;
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+@keyframes markerPulseNew {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow:
+            0 0 20px rgba(239, 68, 68, 1),
+            0 0 40px rgba(239, 68, 68, 0.6),
+            0 4px 10px rgba(0, 0, 0, 0.6);
+    }
+    50% {
+        transform: scale(1.15);
+        box-shadow:
+            0 0 30px rgba(239, 68, 68, 1),
+            0 0 60px rgba(239, 68, 68, 0.8),
+            0 6px 15px rgba(0, 0, 0, 0.7);
+    }
+}
+
+/* حلقه‌های موج */
+.globe-pin-marker::before,
+.globe-pin-marker::after {
+    content: '' !important;
+    position: absolute !important;
+    inset: -8px !important;
+    border: 2px solid rgba(239, 68, 68, 0.6) !important;
+    border-radius: 50% !important;
+    animation: pinRing 2s ease-out infinite !important;
+    pointer-events: none !important;
+}
+
+.globe-pin-marker::after {
+    animation-delay: 1s !important;
+}
+
+@keyframes pinRing {
+    0% {
+        transform: scale(0.6);
+        opacity: 1;
+        border-width: 3px;
+    }
+    100% {
+        transform: scale(3);
+        opacity: 0;
+        border-width: 1px;
+    }
+}
+
+/* نور زیر پین */
+.globe-pin-glow {
+    position: absolute !important;
+    bottom: -25px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 60px !important;
+    height: 15px !important;
+    background: radial-gradient(ellipse, rgba(239, 68, 68, 0.8), transparent 70%) !important;
+    filter: blur(5px) !important;
+    animation: glowPulse 1.5s ease-in-out infinite !important;
+}
+
+@keyframes glowPulse {
+    0%, 100% { opacity: 0.6; width: 60px; }
+    50% { opacity: 1; width: 80px; }
+}
+
+/* برچسب نام کشور روی کره */
+.globe-country-label {
+    position: absolute !important;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.85)) !important;
+    color: white !important;
+    padding: 6px 14px !important;
+    border-radius: 20px !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.6),
+        0 0 20px rgba(239, 68, 68, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    white-space: nowrap !important;
+    animation: labelFloat 3s ease-in-out infinite !important;
+    z-index: 25 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+@keyframes labelFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+.globe-country-label::before {
+    content: '' !important;
+    position: absolute !important;
+    bottom: -6px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 0 !important;
+    height: 0 !important;
+    border-left: 6px solid transparent !important;
+    border-right: 6px solid transparent !important;
+    border-top: 6px solid rgba(220, 38, 38, 0.9) !important;
+}
+
+/* خط اتصال کشور به پین */
+.globe-connection-line {
+    position: absolute !important;
+    background: linear-gradient(180deg,
+        rgba(239, 68, 68, 0.8) 0%,
+        rgba(239, 68, 68, 0.4) 50%,
+        transparent 100%
+    ) !important;
+    width: 2px !important;
+    transform-origin: top center !important;
+    z-index: 15 !important;
+    pointer-events: none !important;
+    filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.8)) !important;
+    animation: lineGlow 2s ease-in-out infinite !important;
+}
+
+@keyframes lineGlow {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+/* دکمه‌های کنترل کره */
+.globe-controls {
+    position: absolute !important;
+    bottom: 15px !important;
+    right: 15px !important;
+    display: flex !important;
+    gap: 8px !important;
+    z-index: 20 !important;
+}
+
+.globe-control-btn {
+    width: 36px !important;
+    height: 36px !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    border: 1px solid rgba(59, 130, 246, 0.4) !important;
+    border-radius: 50% !important;
+    color: #93c5fd !important;
+    cursor: pointer !important;
+    font-size: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.globe-control-btn:hover {
+    background: rgba(59, 130, 246, 0.3) !important;
+    border-color: #3b82f6 !important;
+    transform: scale(1.1) !important;
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* نمایش زمان */
+.globe-info-badge {
+    position: absolute !important;
+    top: 15px !important;
+    left: 15px !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+    border-radius: 20px !important;
+    padding: 6px 14px !important;
+    color: #93c5fd !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    backdrop-filter: blur(10px) !important;
+    z-index: 20 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    direction: ltr !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+.globe-info-badge .dot {
+    width: 8px !important;
+    height: 8px !important;
+    background: #10b981 !important;
+    border-radius: 50% !important;
+    animation: dotBlink 1s ease-in-out infinite !important;
+    box-shadow: 0 0 8px #10b981 !important;
+}
+
+@keyframes dotBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+@media (max-width: 640px) {
+    .globe-3d {
+        width: 260px !important;
+        height: 260px !important;
+    }
+    .globe-pin-flag {
+        font-size: 28px !important;
+    }
+    .globe-country-label {
+        font-size: 11px !important;
+        padding: 4px 10px !important;
+    }
+}
+</style>
+
+<script>
+(function(){
+'use strict';
+
+// ============================================
+// مختصات دقیق کشورها
+// ============================================
+var COORDS = {
+    "DE": { lat: 51.1657, lng: 10.4515, capital: "برلین", continent: "اروپا" },
+    "GB": { lat: 55.3781, lng: -3.4360, capital: "لندن", continent: "اروپا" },
+    "FR": { lat: 46.2276, lng: 2.2137, capital: "پاریس", continent: "اروپا" },
+    "NL": { lat: 52.1326, lng: 5.2913, capital: "آمستردام", continent: "اروپا" },
+    "SE": { lat: 60.1282, lng: 18.6435, capital: "استکهلم", continent: "اروپا" },
+    "NO": { lat: 60.4720, lng: 8.4689, capital: "اسلو", continent: "اروپا" },
+    "DK": { lat: 56.2639, lng: 9.5018, capital: "کپنهاگ", continent: "اروپا" },
+    "FI": { lat: 61.9241, lng: 25.7482, capital: "هلسینکی", continent: "اروپا" },
+    "ES": { lat: 40.4637, lng: -3.7492, capital: "مادرید", continent: "اروپا" },
+    "IT": { lat: 41.8719, lng: 12.5674, capital: "رم", continent: "اروپا" },
+    "PT": { lat: 39.3999, lng: -8.2245, capital: "لیسبون", continent: "اروپا" },
+    "CH": { lat: 46.8182, lng: 8.2275, capital: "برن", continent: "اروپا" },
+    "AT": { lat: 47.5162, lng: 14.5501, capital: "وین", continent: "اروپا" },
+    "BE": { lat: 50.5039, lng: 4.4699, capital: "بروکسل", continent: "اروپا" },
+    "LU": { lat: 49.8153, lng: 6.1296, capital: "لوکزامبورگ", continent: "اروپا" },
+    "IE": { lat: 53.4129, lng: -8.2439, capital: "دوبلین", continent: "اروپا" },
+    "IS": { lat: 64.9631, lng: -19.0208, capital: "ریکیاویک", continent: "اروپا" },
+    "PL": { lat: 51.9194, lng: 19.1451, capital: "ورشو", continent: "اروپا" },
+    "CZ": { lat: 49.8175, lng: 15.4730, capital: "پراگ", continent: "اروپا" },
+    "SK": { lat: 48.6690, lng: 19.6990, capital: "براتیسلاوا", continent: "اروپا" },
+    "HU": { lat: 47.1625, lng: 19.5033, capital: "بوداپست", continent: "اروپا" },
+    "RO": { lat: 45.9432, lng: 24.9668, capital: "بخارست", continent: "اروپا" },
+    "BG": { lat: 42.7339, lng: 25.4858, capital: "صوفیه", continent: "اروپا" },
+    "HR": { lat: 45.1000, lng: 15.2000, capital: "زاگرب", continent: "اروپا" },
+    "SI": { lat: 46.1512, lng: 14.9955, capital: "لیوبلیانا", continent: "اروپا" },
+    "RS": { lat: 44.0165, lng: 21.0059, capital: "بلگراد", continent: "اروپا" },
+    "ME": { lat: 42.7087, lng: 19.3744, capital: "پودگوریتسا", continent: "اروپا" },
+    "MK": { lat: 41.6086, lng: 21.7453, capital: "اسکوپیه", continent: "اروپا" },
+    "AL": { lat: 41.1533, lng: 20.1683, capital: "تیرانا", continent: "اروپا" },
+    "GR": { lat: 39.0742, lng: 21.8243, capital: "آتن", continent: "اروپا" },
+    "CY": { lat: 35.1264, lng: 33.4299, capital: "نیکوزیا", continent: "اروپا" },
+    "MT": { lat: 35.9375, lng: 14.3754, capital: "والتا", continent: "اروپا" },
+    "EE": { lat: 58.5953, lng: 25.0136, capital: "تالین", continent: "اروپا" },
+    "LV": { lat: 56.8796, lng: 24.6032, capital: "ریگا", continent: "اروپا" },
+    "LT": { lat: 55.1694, lng: 23.8813, capital: "ویلنیوس", continent: "اروپا" },
+    "UA": { lat: 48.3794, lng: 31.1656, capital: "کیف", continent: "اروپا" },
+    "MD": { lat: 47.4116, lng: 28.3699, capital: "کیشیناو", continent: "اروپا" },
+    "BY": { lat: 53.7098, lng: 27.9534, capital: "مینسک", continent: "اروپا" },
+    "RU": { lat: 61.5240, lng: 105.3188, capital: "مسکو", continent: "اروپا" },
+    "GE": { lat: 42.3154, lng: 43.3569, capital: "تفلیس", continent: "اروپا" },
+    "AM": { lat: 40.0691, lng: 45.0382, capital: "ایروان", continent: "اروپا" },
+    "AZ": { lat: 40.1431, lng: 47.5769, capital: "باکو", continent: "اروپا" },
+    "BA": { lat: 43.9159, lng: 17.6791, capital: "سارایوو", continent: "اروپا" },
+    "XK": { lat: 42.6026, lng: 20.9030, capital: "پریشتینا", continent: "اروپا" },
+    "MC": { lat: 43.7384, lng: 7.4246, capital: "موناکو", continent: "اروپا" },
+    "LI": { lat: 47.1660, lng: 9.5554, capital: "وادوز", continent: "اروپا" },
+    "AD": { lat: 42.5063, lng: 1.5218, capital: "آندورا لا ولا", continent: "اروپا" },
+    "SM": { lat: 43.9424, lng: 12.4578, capital: "سن مارینو", continent: "اروپا" },
+    "VA": { lat: 41.9029, lng: 12.4534, capital: "واتیکان", continent: "اروپا" },
+    "TR": { lat: 38.9637, lng: 35.2433, capital: "آنکارا", continent: "آسیا" },
+    "AE": { lat: 23.4241, lng: 53.8478, capital: "ابوظبی", continent: "آسیا" },
+    "KR": { lat: 35.9078, lng: 127.7669, capital: "سئول", continent: "آسیا" },
+    "QA": { lat: 25.3548, lng: 51.1839, capital: "دوحه", continent: "آسیا" },
+    "US": { lat: 37.0902, lng: -95.7129, capital: "واشنگتن", continent: "آمریکا شمالی" },
+    "BR": { lat: -14.2350, lng: -51.9253, capital: "برازیلیا", continent: "آمریکا جنوبی" },
+    "AR": { lat: -38.4161, lng: -63.6167, capital: "بوئنوس آیرس", continent: "آمریکا جنوبی" },
+    "CO": { lat: 4.5709, lng: -74.2973, capital: "بوگوتا", continent: "آمریکا جنوبی" },
+    "BH": { lat: 25.9304, lng: 50.6378, capital: "منامه", continent: "آسیا" },
+    "ZA": { lat: -30.5595, lng: 22.9375, capital: "پرتوریا", continent: "آفریقا" },
+    "BD": { lat: 23.6850, lng: 90.3563, capital: "داکا", continent: "آسیا" },
+    "PH": { lat: 12.8797, lng: 121.7740, capital: "مانیل", continent: "آسیا" }
+};
+
+// ============================================
+// Override تابع نمایش کره
+// ============================================
+window.showGlobeForLocation = function(code) {
+    if(typeof LOCATIONS_DB === 'undefined' || !LOCATIONS_DB[code]) return;
+
+    var loc = LOCATIONS_DB[code];
+    var coords = COORDS[code] || { lat: 0, lng: 0, capital: 'نامشخص', continent: 'نامشخص' };
+
+    var oldModal = document.getElementById('globeModalOverlay');
+    if(oldModal) oldModal.remove();
+
+    var configsCount = loc.configs ? loc.configs.length : 0;
+    var vlessCount = 0, ssCount = 0;
+    if(loc.configs) {
+        loc.configs.forEach(function(c){
+            var v = typeof c === 'string' ? c : (c && c.value ? c.value : '');
+            if(v.indexOf('vless://') === 0) vlessCount++;
+            else if(v.indexOf('ss://') === 0) ssCount++;
+        });
+    }
+
+    var now = new Date();
+    var timeStr = now.toTimeString().substring(0, 5) + ' UTC';
+
+    var modal = document.createElement('div');
+    modal.id = 'globeModalOverlay';
+    modal.className = 'globe-modal-overlay';
+    modal.onclick = function(e){ if(e.target === modal) closeGlobeModal(); };
+
+    modal.innerHTML =
+        '<div class="globe-modal">' +
+
+            '<div class="globe-header">' +
+                '<div class="globe-header-info">' +
+                    '<div class="globe-header-flag">' + loc.flag + '</div>' +
+                    '<div class="globe-header-text">' +
+                        '<h3>' + loc.name + '</h3>' +
+                        '<p>🌍 ' + coords.continent + ' • ' + code + '</p>' +
+                    '</div>' +
+                '</div>' +
+                '<button class="globe-close-btn" onclick="closeGlobeModal()">×</button>' +
+            '</div>' +
+
+            '<div class="globe-container">' +
+
+                // اطلاعات بالا چپ
+                '<div class="globe-info-badge">' +
+                    '<div class="dot"></div>' +
+                    '<span>' + timeStr + '</span>' +
+                '</div>' +
+
+                // ستاره‌ها
+                '<div class="globe-stars" id="globeStarsContainer"></div>' +
+
+                // کره زمین
+                '<div class="globe-3d">' +
+                    '<div class="globe-atmosphere"></div>' +
+                    '<div class="globe-sphere" id="globeSphere">' +
+
+                        // خطوط طول و عرض
+                        buildLatitudes() +
+                        buildLongitudes() +
+
+                        // قاره‌ها با شکل واقعی‌تر
+                        '<div class="globe-continent" style="top:22%;left:38%;width:20%;height:18%;"></div>' + // اروپا
+                        '<div class="globe-continent" style="top:18%;left:12%;width:25%;height:30%;border-radius: 30% 60% 40% 70%;"></div>' + // آمریکا شمالی
+                        '<div class="globe-continent" style="top:48%;left:20%;width:14%;height:28%;border-radius: 50% 40% 70% 30%;"></div>' + // آمریکا جنوبی
+                        '<div class="globe-continent" style="top:32%;left:45%;width:18%;height:32%;border-radius: 40% 55% 45% 60%;"></div>' + // آفریقا
+                        '<div class="globe-continent" style="top:25%;left:60%;width:32%;height:28%;border-radius: 45% 55% 60% 40%;"></div>' + // آسیا
+                        '<div class="globe-continent" style="top:63%;left:73%;width:14%;height:10%;"></div>' + // اقیانوسیه
+                        '<div class="globe-continent" style="top:5%;left:35%;width:30%;height:8%;opacity:0.6;"></div>' + // گرین‌لند
+
+                        // ابرها
+                        '<div class="globe-clouds"></div>' +
+
+                        // اشعه نور
+                        '<div class="globe-lens-flare"></div>' +
+
+                        // پین موقعیت
+                        '<div class="globe-pin-container">' +
+                            '<div class="globe-pin" id="globePin" style="left:0px;top:0px;">' +
+                                '<div class="globe-pin-flag">' + loc.flag + '</div>' +
+                                '<div class="globe-pin-marker"></div>' +
+                                '<div class="globe-pin-glow"></div>' +
+                            '</div>' +
+                        '</div>' +
+
+                    '</div>' +
+
+                    // برچسب کشور
+                    '<div class="globe-country-label" id="globeCountryLabel" style="opacity:0;">' +
+                        '<span>' + loc.flag + '</span>' +
+                        '<span>' + loc.name + '</span>' +
+                    '</div>' +
+                '</div>' +
+
+                // دکمه‌های کنترل
+                '<div class="globe-controls">' +
+                    '<button class="globe-control-btn" onclick="zoomInGlobe()" title="بزرگنمایی">➕</button>' +
+                    '<button class="globe-control-btn" onclick="zoomOutGlobe()" title="کوچک‌نمایی">➖</button>' +
+                    '<button class="globe-control-btn" onclick="resetGlobe()" title="بازنشانی">🎯</button>' +
+                '</div>' +
+
+            '</div>' +
+
+            '<div class="globe-info-panel">' +
+                '<div class="globe-info-grid">' +
+                    '<div class="globe-info-item">' +
+                        '<span class="info-icon">🏛️</span>' +
+                        '<div class="info-label">پایتخت</div>' +
+                        '<div class="info-value">' + coords.capital + '</div>' +
+                    '</div>' +
+                    '<div class="globe-info-item">' +
+                        '<span class="info-icon">🌐</span>' +
+                        '<div class="info-label">قاره</div>' +
+                        '<div class="info-value">' + coords.continent + '</div>' +
+                    '</div>' +
+                    '<div class="globe-info-item">' +
+                        '<span class="info-icon">📦</span>' +
+                        '<div class="info-label">کانفیگ</div>' +
+                        '<div class="info-value">' + configsCount + '</div>' +
+                    '</div>' +
+                '</div>' +
+
+                '<div class="globe-info-grid" style="margin-bottom:12px;">' +
+                    '<div class="globe-info-item">' +
+                        '<span class="info-icon">🛡️</span>' +
+                        '<div class="info-label">VLESS</div>' +
+                        '<div class="info-value" style="color:#6ee7b7;">' + vlessCount + '</div>' +
+                    '</div>' +
+                    '<div class="globe-info-item">' +
+                        '<span class="info-icon">🌊</span>' +
+                        '<div class="info-label">Shadowsocks</div>' +
+                        '<div class="info-value">' + ssCount + '</div>' +
+                    '</div>' +
+                '</div>' +
+
+                '<div class="globe-coordinates">' +
+                    '<span class="coord-label">📍 مختصات دقیق:</span>' +
+                    'Lat ' + coords.lat.toFixed(4) + '° | Lng ' + coords.lng.toFixed(4) + '°' +
+                '</div>' +
+            '</div>' +
+
+        '</div>';
+
+    document.body.appendChild(modal);
+
+    // ساخت ستاره‌ها
+    setTimeout(function(){
+        buildStars();
+        positionPin(coords);
+        showCountryLabel(coords);
+    }, 100);
+
+    setTimeout(function(){ modal.classList.add('show'); }, 50);
+};
+
+// ============================================
+// ساخت خطوط عرض جغرافیایی
+// ============================================
+function buildLatitudes() {
+    var html = '';
+    for(var i = 1; i < 6; i++) {
+        var top = (i / 6) * 100;
+        var scaleY = Math.sin((i / 6) * Math.PI);
+        html += '<div class="globe-latitude" style="top:' + top + '%;transform:scaleX(' + scaleY + ');"></div>';
+    }
+    return html;
+}
+
+// ============================================
+// ساخت خطوط طول جغرافیایی
+// ============================================
+function buildLongitudes() {
+    var html = '';
+    for(var i = 1; i < 8; i++) {
+        var left = (i / 8) * 100;
+        html += '<div class="globe-longitude" style="left:' + left + '%;"></div>';
+    }
+    return html;
+}
+
+// ============================================
+// ستاره‌ها
+// ============================================
+function buildStars() {
+    var container = document.getElementById('globeStarsContainer');
+    if(!container) return;
+
+    container.innerHTML = '';
+
+    // 60 ستاره
+    for(var i = 0; i < 60; i++) {
+        var star = document.createElement('div');
+        star.className = 'globe-star';
+        if(Math.random() > 0.7) star.className += ' big';
+
+        var size = Math.random() * 2 + 1;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        star.style.animationDelay = (Math.random() * 3) + 's';
+        container.appendChild(star);
+    }
+
+    // 2 شهاب سنگ
+    for(var j = 0; j < 2; j++) {
+        var meteor = document.createElement('div');
+        meteor.className = 'globe-meteor';
+        meteor.style.left = Math.random() * 50 + '%';
+        meteor.style.top = Math.random() * 30 + '%';
+        meteor.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        meteor.style.animationDelay = (Math.random() * 8 + j * 4) + 's';
+        container.appendChild(meteor);
+    }
+}
+
+// ============================================
+// موقعیت‌دهی دقیق پین
+// ============================================
+function positionPin(coords) {
+    var pin = document.getElementById('globePin');
+    if(!pin) return;
+
+    // شعاع کره
+    var radius = 140;
+
+    // تبدیل مختصات جغرافیایی به مختصات دو بعدی روی صفحه
+    // فرمول projection
+    var latRad = (coords.lat * Math.PI) / 180;
+    var lngRad = (coords.lng * Math.PI) / 180;
+
+    // مرکز کره ثابت هست (بدون چرخش)
+    // نقشه به صورت frontal (روبروی بیننده)
+    var x = radius * Math.cos(latRad) * Math.sin(lngRad);
+    var y = -radius * Math.sin(latRad);
+
+    // چک اینکه نقطه در سمت قابل مشاهده کره باشه
+    var z = radius * Math.cos(latRad) * Math.cos(lngRad);
+
+    if(z > 0) {
+        // در سمت جلوی کره
+        pin.style.left = x + 'px';
+        pin.style.top = y + 'px';
+        pin.style.opacity = '1';
+
+        // مقیاس بر اساس عمق
+        var scale = 0.7 + (z / radius) * 0.3;
+        pin.style.transform = 'translate(-50%, -100%) scale(' + scale + ')';
+    } else {
+        // در پشت کره - کمی محو
+        pin.style.left = x + 'px';
+        pin.style.top = y + 'px';
+        pin.style.opacity = '0.3';
+        pin.style.transform = 'translate(-50%, -100%) scale(0.5)';
+    }
+}
+
+// ============================================
+// نمایش برچسب کشور
+// ============================================
+function showCountryLabel(coords) {
+    var label = document.getElementById('globeCountryLabel');
+    var pin = document.getElementById('globePin');
+    if(!label || !pin) return;
+
+    setTimeout(function(){
+        var pinRect = pin.getBoundingClientRect();
+        var containerRect = pin.closest('.globe-3d').getBoundingClientRect();
+
+        var relX = pinRect.left - containerRect.left + pinRect.width / 2;
+        var relY = pinRect.top - containerRect.top;
+
+        // برچسب رو بالای پین یا کنارش قرار میدیم
+        label.style.left = relX + 'px';
+        label.style.top = (relY - 55) + 'px';
+        label.style.transform = 'translate(-50%, 0)';
+        label.style.opacity = '1';
+        label.style.transition = 'opacity 0.5s ease';
+    }, 800);
+}
+
+// ============================================
+// کنترل‌های زوم (ثابت میکنیم بدون چرخش)
+// ============================================
+var currentZoom = 1;
+
+window.zoomInGlobe = function() {
+    var sphere = document.getElementById('globeSphere');
+    if(!sphere) return;
+    currentZoom = Math.min(currentZoom + 0.15, 1.8);
+    sphere.style.transform = 'scale(' + currentZoom + ')';
+    sphere.style.transition = 'transform 0.3s ease';
+};
+
+window.zoomOutGlobe = function() {
+    var sphere = document.getElementById('globeSphere');
+    if(!sphere) return;
+    currentZoom = Math.max(currentZoom - 0.15, 0.7);
+    sphere.style.transform = 'scale(' + currentZoom + ')';
+    sphere.style.transition = 'transform 0.3s ease';
+};
+
+window.resetGlobe = function() {
+    var sphere = document.getElementById('globeSphere');
+    if(!sphere) return;
+    currentZoom = 1;
+    sphere.style.transform = 'scale(1)';
+    sphere.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+
+    // نوتیفیکیشن
+    if(typeof showNotification === 'function') {
+        showNotification('🎯 نمای اصلی', 'info');
+    }
+};
+
+console.log('✅ Advanced 3D Globe loaded (fixed, non-rotating)');
+})();
+</script>
+<style>
+/* ============================================
+   کپچا "من ربات نیستم"
+============================================ */
+.captcha-container {
+    background: linear-gradient(145deg, rgba(18, 18, 26, 0.95), rgba(26, 26, 46, 0.9));
+    border: 2px solid rgba(59, 130, 246, 0.25);
+    border-radius: 12px;
+    padding: 15px 18px;
+    margin: 15px 0;
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.captcha-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.05), transparent);
+    transition: left 0.6s;
+}
+
+.captcha-container:hover::before {
+    left: 100%;
+}
+
+.captcha-container:hover {
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
+    transform: translateY(-2px);
+}
+
+/* چک باکس اصلی */
+.captcha-checkbox {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(145deg, #16162a, #0f0f1e);
+    border: 2px solid rgba(59, 130, 246, 0.4);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    flex-shrink: 0;
+    box-shadow:
+        inset 0 2px 4px rgba(0, 0, 0, 0.5),
+        0 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.captcha-checkbox:hover {
+    border-color: #3b82f6;
+    background: linear-gradient(145deg, #1a1a35, #14142a);
+    transform: scale(1.05);
+}
+
+/* حالت در حال بررسی */
+.captcha-checkbox.checking {
+    border-color: #f59e0b;
+    background: linear-gradient(145deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+}
+
+.captcha-checkbox.checking::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(245, 158, 11, 0.3);
+    border-top-color: #f59e0b;
+    border-radius: 50%;
+    animation: captchaSpin 0.8s linear infinite;
+}
+
+@keyframes captchaSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* حالت تایید شده */
+.captcha-checkbox.verified {
+    border-color: #10b981;
+    background: linear-gradient(145deg, #10b981, #059669);
+    animation: verifiedPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow:
+        0 0 20px rgba(16, 185, 129, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+@keyframes verifiedPop {
+    0% { transform: scale(0.8); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.captcha-checkbox.verified::before {
+    content: '✓';
+    color: white;
+    font-size: 22px;
+    font-weight: 900;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    animation: checkAppear 0.4s ease;
+}
+
+@keyframes checkAppear {
+    from { opacity: 0; transform: scale(0); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* حالت خطا */
+.captcha-checkbox.failed {
+    border-color: #ef4444;
+    background: linear-gradient(145deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05));
+    animation: shake 0.5s;
+}
+
+.captcha-checkbox.failed::before {
+    content: '✗';
+    color: #ef4444;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* متن */
+.captcha-text {
+    flex: 1;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 700;
+    user-select: none;
+}
+
+.captcha-text.checking {
+    color: #fcd34d;
+}
+
+.captcha-text.verified {
+    color: #6ee7b7;
+}
+
+.captcha-text.failed {
+    color: #fca5a5;
+}
+
+/* لوگو */
+.captcha-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    color: var(--text-dim);
+    padding: 5px 10px;
+    border-left: 1px solid rgba(59, 130, 246, 0.15);
+    padding-left: 12px;
+}
+
+.captcha-logo .logo-icon {
+    font-size: 24px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.captcha-logo .logo-name {
+    font-weight: 800;
+    color: #93c5fd;
+    letter-spacing: 1px;
+    font-size: 9px;
+}
+
+/* ============================================
+   مودال چالش تصویری
+============================================ */
+.challenge-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(15px);
+    z-index: 100001;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.challenge-overlay.show {
+    display: flex;
+}
+
+.challenge-modal {
+    background: linear-gradient(145deg, #12121a, #1a1a2e);
+    border: 2px solid rgba(59, 130, 246, 0.4);
+    border-radius: 20px;
+    padding: 25px;
+    width: 400px;
+    max-width: 95%;
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.6),
+        0 0 40px rgba(59, 130, 246, 0.2);
+    animation: challengeIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes challengeIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.9); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.challenge-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.challenge-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #93c5fd;
+    margin-bottom: 5px;
+}
+
+.challenge-subtitle {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-weight: 600;
+}
+
+/* چالش ریاضی */
+.challenge-math {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.03));
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    padding: 25px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.challenge-question {
+    font-size: 32px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 4px;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);
+    margin-bottom: 5px;
+}
+
+.challenge-hint {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 8px;
+}
+
+.challenge-input {
+    width: 100%;
+    padding: 15px;
+    background: var(--bg-input);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    font-size: 24px;
+    font-weight: 800;
+    outline: none;
+    text-align: center;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+    transition: 0.3s;
+}
+
+.challenge-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+.challenge-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.challenge-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    transition: 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.challenge-btn.verify {
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: #fff;
+    box-shadow: 0 4px 0 #047857;
+}
+
+.challenge-btn.verify:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #047857;
+}
+
+.challenge-btn.new {
+    background: linear-gradient(135deg, #7c3aed, #9333ea);
+    color: #fff;
+    box-shadow: 0 4px 0 #5b21b6;
+}
+
+.challenge-btn.new:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #5b21b6;
+}
+
+.challenge-btn:active {
+    transform: translateY(1px);
+}
+
+.challenge-attempts {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.challenge-attempts .attempt-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    margin: 0 3px;
+    box-shadow: 0 0 5px #10b981;
+}
+
+.challenge-attempts .attempt-dot.used {
+    background: #ef4444;
+    box-shadow: 0 0 5px #ef4444;
+}
+
+/* Light theme */
+body.light-theme .captcha-container {
+    background: #f8f9fa !important;
+    border-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+body.light-theme .captcha-checkbox {
+    background: #ffffff !important;
+    border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+body.light-theme .challenge-modal {
+    background: #ffffff !important;
+    border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+body.light-theme .challenge-input {
+    background: #f0f2f5 !important;
+    color: #1e1e2e !important;
+    border-color: #d1d5db !important;
+}
+</style>
+
+<script>
+(function(){
+'use strict';
+
+// ============================================
+// وضعیت کپچا
+// ============================================
+window.captchaVerified = false;
+var currentAnswer = 0;
+var attemptsLeft = 3;
+
+// ============================================
+// اضافه کردن کپچا به صفحه لاگین
+// ============================================
+function addCaptcha() {
+    var loginBox = document.querySelector('.login-box');
+    if(!loginBox) return;
+
+    // چک اگه قبلاً اضافه شده
+    if(document.getElementById('captchaBox')) return;
+
+    // پیدا کردن دکمه ورود
+    var loginBtn = loginBox.querySelector('.btn-primary, .login-btn-3d');
+    if(!loginBtn) return;
+
+    // ساخت کپچا
+    var captcha = document.createElement('div');
+    captcha.className = 'captcha-container';
+    captcha.id = 'captchaBox';
+    captcha.innerHTML =
+        '<div class="captcha-checkbox" id="captchaCheckbox" onclick="startCaptcha()"></div>' +
+        '<div class="captcha-text" id="captchaText">من ربات نیستم</div>' +
+        '<div class="captcha-logo">' +
+            '<div class="logo-icon">🛡️</div>' +
+            '<div class="logo-name">DARK</div>' +
+            '<div>حفاظت</div>' +
+        '</div>';
+
+    // قرار دادن قبل از دکمه ورود
+    loginBtn.parentNode.insertBefore(captcha, loginBtn);
+
+    // غیرفعال کردن دکمه ورود
+    disableLoginButton();
+}
+
+// ============================================
+// شروع فرآیند کپچا
+// ============================================
+window.startCaptcha = function() {
+    var checkbox = document.getElementById('captchaCheckbox');
+    var text = document.getElementById('captchaText');
+
+    if(!checkbox || checkbox.classList.contains('verified') || checkbox.classList.contains('checking')) return;
+
+    // نمایش در حال بررسی
+    checkbox.className = 'captcha-checkbox checking';
+    text.className = 'captcha-text checking';
+    text.textContent = '🔍 در حال بررسی...';
+
+    // شبیه‌سازی بررسی
+    setTimeout(function() {
+        // نمایش چالش ریاضی
+        showChallenge();
+    }, 1500);
+};
+
+// ============================================
+// چالش ریاضی
+// ============================================
+function generateChallenge() {
+    var operations = ['+', '-', '×'];
+    var op = operations[Math.floor(Math.random() * operations.length)];
+    var a, b, answer;
+
+    if(op === '+') {
+        a = Math.floor(Math.random() * 20) + 5;
+        b = Math.floor(Math.random() * 20) + 5;
+        answer = a + b;
+    } else if(op === '-') {
+        a = Math.floor(Math.random() * 30) + 20;
+        b = Math.floor(Math.random() * 15) + 5;
+        answer = a - b;
+    } else {
+        a = Math.floor(Math.random() * 10) + 2;
+        b = Math.floor(Math.random() * 10) + 2;
+        answer = a * b;
+    }
+
+    return {
+        question: a + ' ' + op + ' ' + b + ' = ؟',
+        answer: answer
+    };
+}
+
+function showChallenge() {
+    var challenge = generateChallenge();
+    currentAnswer = challenge.answer;
+
+    // حذف مودال قبلی
+    var old = document.getElementById('challengeOverlay');
+    if(old) old.remove();
+
+    // ساخت مودال چالش
+    var overlay = document.createElement('div');
+    overlay.id = 'challengeOverlay';
+    overlay.className = 'challenge-overlay';
+
+    var dots = '';
+    for(var i = 0; i < 3; i++) {
+        dots += '<span class="attempt-dot ' + (i >= attemptsLeft ? 'used' : '') + '"></span>';
+    }
+
+    overlay.innerHTML =
+        '<div class="challenge-modal">' +
+            '<div class="challenge-header">' +
+                '<div class="challenge-title">🤖 تأیید انسان بودن</div>' +
+                '<div class="challenge-subtitle">لطفاً مسئله زیر را حل کنید</div>' +
+            '</div>' +
+
+            '<div class="challenge-math">' +
+                '<div class="challenge-question">' + challenge.question + '</div>' +
+                '<div class="challenge-hint">🧮 عدد صحیح را وارد کنید</div>' +
+            '</div>' +
+
+            '<input type="number" class="challenge-input" id="challengeInput" placeholder="؟" autocomplete="off" onkeypress="if(event.key===\'Enter\')verifyChallenge()">' +
+
+            '<div class="challenge-buttons">' +
+                '<button class="challenge-btn new" onclick="showChallenge()">🔄 سوال جدید</button>' +
+                '<button class="challenge-btn verify" onclick="verifyChallenge()">✅ تأیید</button>' +
+            '</div>' +
+
+            '<div class="challenge-attempts">' +
+                '⚡ تلاش‌های باقی‌مانده: ' + dots +
+            '</div>' +
+        '</div>';
+
+    document.body.appendChild(overlay);
+    setTimeout(function(){
+        overlay.classList.add('show');
+        var input = document.getElementById('challengeInput');
+        if(input) input.focus();
+    }, 50);
+}
+
+// ============================================
+// بررسی پاسخ
+// ============================================
+window.verifyChallenge = function() {
+    var input = document.getElementById('challengeInput');
+    if(!input) return;
+
+    var userAnswer = parseInt(input.value);
+
+    if(isNaN(userAnswer)) {
+        input.style.borderColor = '#ef4444';
+        setTimeout(function(){ input.style.borderColor = ''; }, 1500);
+        return;
+    }
+
+    if(userAnswer === currentAnswer) {
+        // درست
+        captchaSuccess();
+    } else {
+        // اشتباه
+        captchaFail();
+    }
+};
+
+// ============================================
+// موفقیت
+// ============================================
+function captchaSuccess() {
+    var overlay = document.getElementById('challengeOverlay');
+    if(overlay) {
+        overlay.style.opacity = '0';
+        setTimeout(function(){ overlay.remove(); }, 300);
+    }
+
+    var checkbox = document.getElementById('captchaCheckbox');
+    var text = document.getElementById('captchaText');
+
+    if(checkbox) checkbox.className = 'captcha-checkbox verified';
+    if(text) {
+        text.className = 'captcha-text verified';
+        text.textContent = '✅ من ربات نیستم';
+    }
+
+    window.captchaVerified = true;
+    attemptsLeft = 3;
+
+    // فعال کردن دکمه ورود
+    enableLoginButton();
+
+    if(typeof showNotification === 'function') {
+        showNotification('✅ تأیید موفق!', 'success');
+    }
+}
+
+// ============================================
+// شکست
+// ============================================
+function captchaFail() {
+    attemptsLeft--;
+
+    var input = document.getElementById('challengeInput');
+    if(input) {
+        input.value = '';
+        input.style.borderColor = '#ef4444';
+        input.style.animation = 'shake 0.5s';
+        setTimeout(function(){
+            input.style.borderColor = '';
+            input.style.animation = '';
+        }, 1000);
+    }
+
+    if(typeof showNotification === 'function') {
+        showNotification('❌ پاسخ اشتباه! دوباره تلاش کنید', 'error');
+    }
+
+    if(attemptsLeft <= 0) {
+        // خارج از تلاش‌ها
+        var overlay = document.getElementById('challengeOverlay');
+        if(overlay) overlay.remove();
+
+        var checkbox = document.getElementById('captchaCheckbox');
+        var text = document.getElementById('captchaText');
+
+        if(checkbox) checkbox.className = 'captcha-checkbox failed';
+        if(text) {
+            text.className = 'captcha-text failed';
+            text.textContent = '❌ لطفاً دوباره تلاش کنید';
+        }
+
+        attemptsLeft = 3;
+
+        if(typeof showNotification === 'function') {
+            showNotification('❌ تعداد تلاش‌ها به پایان رسید', 'error');
+        }
+
+        // ریست بعد از 3 ثانیه
+        setTimeout(function(){
+            if(checkbox) checkbox.className = 'captcha-checkbox';
+            if(text) {
+                text.className = 'captcha-text';
+                text.textContent = 'من ربات نیستم';
+            }
+        }, 3000);
+    } else {
+        // چالش جدید
+        setTimeout(showChallenge, 500);
+    }
+}
+
+// ============================================
+// غیرفعال کردن دکمه ورود
+// ============================================
+function disableLoginButton() {
+    var loginBtn = document.querySelector('.login-box .btn-primary, .login-box .login-btn-3d');
+    if(!loginBtn) return;
+
+    loginBtn.style.opacity = '0.5';
+    loginBtn.style.cursor = 'not-allowed';
+    loginBtn.setAttribute('data-captcha-disabled', 'yes');
+}
+
+// ============================================
+// فعال کردن دکمه ورود
+// ============================================
+function enableLoginButton() {
+    var loginBtn = document.querySelector('.login-box .btn-primary, .login-box .login-btn-3d');
+    if(!loginBtn) return;
+
+    loginBtn.style.opacity = '';
+    loginBtn.style.cursor = '';
+    loginBtn.removeAttribute('data-captcha-disabled');
+}
+
+// ============================================
+// Override تابع login
+// ============================================
+var _origLogin = window.login;
+if(typeof _origLogin === 'function') {
+    window.login = function() {
+        if(!window.captchaVerified) {
+            if(typeof showNotification === 'function') {
+                showNotification('⚠️ ابتدا تأیید کنید که ربات نیستید!', 'error');
+            }
+            // تکون دادن کپچا
+            var box = document.getElementById('captchaBox');
+            if(box) {
+                box.style.animation = 'shake 0.5s';
+                setTimeout(function(){ box.style.animation = ''; }, 500);
+            }
+            return;
+        }
+        _origLogin.apply(this, arguments);
+    };
+}
+
+var _origDoLogin = window.doLogin;
+if(typeof _origDoLogin === 'function') {
+    window.doLogin = function() {
+        if(!window.captchaVerified) {
+            if(typeof showNotification === 'function') {
+                showNotification('⚠️ ابتدا تأیید کنید که ربات نیستید!', 'error');
+            }
+            var box = document.getElementById('captchaBox');
+            if(box) {
+                box.style.animation = 'shake 0.5s';
+                setTimeout(function(){ box.style.animation = ''; }, 500);
+            }
+            return;
+        }
+        _origDoLogin.apply(this, arguments);
+    };
+}
+
+// ============================================
+// ریست کپچا بعد از لاگین اشتباه
+// ============================================
+function resetCaptcha() {
+    window.captchaVerified = false;
+    attemptsLeft = 3;
+
+    var checkbox = document.getElementById('captchaCheckbox');
+    var text = document.getElementById('captchaText');
+
+    if(checkbox) checkbox.className = 'captcha-checkbox';
+    if(text) {
+        text.className = 'captcha-text';
+        text.textContent = 'من ربات نیستم';
+    }
+
+    disableLoginButton();
+}
+
+// اجرا در چند مرحله
+setTimeout(addCaptcha, 500);
+setTimeout(addCaptcha, 1500);
+setTimeout(addCaptcha, 3000);
+
+// چک هر 2 ثانیه
+setInterval(function(){
+    var loginPage = document.getElementById('loginPage');
+    if(loginPage && loginPage.style.display !== 'none' && !document.getElementById('captchaBox')) {
+        addCaptcha();
+    }
+}, 2000);
+
+// کلیک بیرون از مودال چالش
+document.addEventListener('click', function(e){
+    if(e.target && e.target.id === 'challengeOverlay') {
+        // نبند تا مجبور بشه حل کنه
+    }
+});
+
+console.log('✅ Captcha "I am not a robot" loaded');
+})();
+</script>
 </body>
 </html>
