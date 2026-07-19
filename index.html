@@ -9546,5 +9546,138 @@ document.addEventListener('click', function(e){
 console.log('✅ Captcha "I am not a robot" loaded');
 })();
 </script>
+<style id="ultimate-scroll-fix">
+/* ============================================
+   حذف کامل قفل اسکرول - نسخه نهایی
+   با بالاترین اولویت
+============================================ */
+
+html {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    height: auto !important;
+    min-height: 100% !important;
+    position: static !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+html.no-scroll,
+html.modal-open,
+html.locked,
+html[class*="lock"] {
+    overflow-y: auto !important;
+    position: static !important;
+    height: auto !important;
+}
+
+body,
+body.modal-open,
+body.no-scroll,
+body.locked,
+body[class*="lock"] {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    position: relative !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+}
+
+/* اسکرول‌بار زیبا */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(18, 18, 26, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #7c3aed, #9333ea);
+    border-radius: 5px;
+    border: 2px solid rgba(18, 18, 26, 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #9333ea, #a855f7);
+}
+
+/* داشبورد */
+.dashboard {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    position: relative !important;
+}
+
+/* Main content */
+.main-content {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    position: relative !important;
+    padding-bottom: 100px !important;
+}
+
+/* Sidebar فقط در دسکتاپ ثابت باشه */
+@media (min-width: 769px) {
+    .sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        right: 0 !important;
+        height: 100vh !important;
+        overflow-y: auto !important;
+    }
+}
+
+/* موبایل */
+@media (max-width: 768px) {
+    .sidebar {
+        position: relative !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+    .main-content {
+        margin-right: 0 !important;
+    }
+}
+
+/* صفحات */
+.page {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto !important;
+}
+
+/* مودال‌ها بدون قفل کردن body */
+.modal-overlay,
+.profile-modal-overlay,
+.security-alert-overlay,
+.globe-modal-overlay,
+.challenge-overlay,
+.lockout-overlay {
+    position: fixed !important;
+}
+
+/* اسکرول در مودال */
+.modal,
+.profile-modal,
+.security-alert-box,
+.globe-modal,
+.challenge-modal,
+.lockout-modal {
+    max-height: 92vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+</style>
 </body>
 </html>
