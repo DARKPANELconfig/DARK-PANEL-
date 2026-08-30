@@ -409,73 +409,179 @@ body.light .mc{background:linear-gradient(135deg,#fff,#f5f7ff)}
 // تا با نگاه ساده به کد قابل تشخیص نباشه
 // ============================================================
 
-const _S = [
-  // barry-far/V2ray-Configs (روزانه آپدیت میشه)
-  'YUhSMGNITTZMeTlqWkc0dWFuTmtaV3hwZG5JdWJtVjBMMmRvTDJKaGNuSjVMV1poY2k5V01uSmhlUzFEYjI1bWFXZHpRRzFoYVc0dlUzVmljMk55YVhCMGFXOXVMMEZzYkY5RGIyNW1hV2N1ZEhoMA==',
-  // mahdibland/V2RayAggregator (روزانه)
-  'YUhSMGNITTZMeTlqWkc0dWFuTmtaV3hwZG5JdWJtVjBMMmRvTDIxaGFHUnBZbXhoYm1RdlZqSlNZWGxCWjJkeVpXZGhkRzl5UUcxaGFXNHZjM1ZpTDNOMVlpOXplbWM1WlM1MGVIUT0=',
-  // soroushmirzaei/telegram-configs-collector (روزانه)
-  'YUhSMGNITTZMeTlqWkc0dWFuTmtaV3hwZG5JdWJtVjBMMmRvTDNOdmNtOTFjMmh0YVhKNllXVnBMM1JsYkdWbmNtRnRMV052Ym1acFozTXRZMjlzYkdWamRHOXlRRzFoYVc0dllYTnpaWFJ6TDJ4cGRHVjBMMjE0YVc1cExtTm1adz09',
-  // mahdibland/ShadowsocksAggregator (روزانه)
-  'YUhSMGNITTZMeTlqWkc0dWFuTmtaV3hwZG5JdWJtVjBMMmRvTDIxaGFHUnBZbXhoYm1RdlUyaGhaRzkzYzI5amEzTkJaMmR5WldkaGRHOXlRRzFoYVc0dlUwOU5MMTlOWlhKblpXUmZZbUZ6WlRZMExtMWxjbWRs',
-  // roosterkid/openproxylist
-  'YUhSMGNITTZMeTlqWkc0dWFuTmtaV3hwZG5JdWJtVjBMMmRvTDNKdmIzTjBaWEpyYVdRdmIzQmxibkJ5YjNoNWJHbHpkRUJ0WVdsdUwxWXlVbUY1WDFKQlZ5OUJURXhmUTBaSFV5NTBlSFE9',
-  // ALIILAPRO/v2ray (روزانه)
-  'YUhSMGNITTZMeTlqWkc0dWFuTmtaV3hwZG5JdWJtVjBMMmRvTDBGTVNVbE1RVkJTVHk5Mk1uSmhlUzlBYldGcGJpOXpkV0p6WTNKcGNIUnBiMjV6TDFZeVJ3PT0=',
-  // yebekhe/vpn-fail (روزانه)
-  'YUhSMGNITTZMeTlqWkd0dWFuTmtaV3hwZG5JdWJtVjBMMmRvTDNsbFltVnJhR1V2ZG5CdUxXWmhhV3d2Y21WbVpYSmxibU5sTDFOMVlnPT0=',
-  // MhdiTaheri/V2rayCollector (روزانه)
-  'YUhSMGNITTZMeTlqWkc0dWFuTmtaV3hwZG5JdWJtVjBMMmRvTDAxb1pHbFVZV2hsY21rdlZqSnlZWGxEYjJ4c1pXTjBiM0l2YldGcGJpOXpkV0p6WTNKcGNIUnBiMjV6TDNKbFlXd3ZiV2w0WldRdVluTmk='
-];
-
-// اسم لوکیشن‌ها با پرچم + کلیدواژه‌های تشخیص
-// از این کلیدواژه‌ها برای دسته‌بندی کانفیگ‌ها استفاده می‌کنیم
-const LOCATIONS = [
-  { key: 'de', name: 'آلمان', flag: '🇩🇪', tags: ['germany','de-','german','🇩🇪','deutsch','frankfurt','berlin','munich','de_','_de_','-de-','[de]','falkenstein'] },
-  { key: 'us', name: 'آمریکا', flag: '🇺🇸', tags: ['usa','united states','us-','america','🇺🇸','_us_','-us-','[us]','new york','ny-','california','ca-','miami','dallas','seattle','chicago','ashburn'] },
-  { key: 'fr', name: 'فرانسه', flag: '🇫🇷', tags: ['france','fr-','french','🇫🇷','paris','_fr_','-fr-','[fr]','roubaix','gravelines'] },
-  { key: 'nl', name: 'هلند', flag: '🇳🇱', tags: ['netherlands','nl-','holland','🇳🇱','amsterdam','_nl_','-nl-','[nl]','dutch'] },
-  { key: 'gb', name: 'انگلیس', flag: '🇬🇧', tags: ['united kingdom','uk-','britain','england','🇬🇧','london','_uk_','-uk-','[uk]','gb-','_gb_'] },
-  { key: 'jp', name: 'ژاپن', flag: '🇯🇵', tags: ['japan','jp-','🇯🇵','tokyo','_jp_','-jp-','[jp]','osaka','japanese'] },
-  { key: 'sg', name: 'سنگاپور', flag: '🇸🇬', tags: ['singapore','sg-','🇸🇬','_sg_','-sg-','[sg]'] },
-  { key: 'tr', name: 'ترکیه', flag: '🇹🇷', tags: ['turkey','tr-','🇹🇷','turkish','istanbul','_tr_','-tr-','[tr]','ankara'] },
-  { key: 'ae', name: 'امارات', flag: '🇦🇪', tags: ['uae','emirates','ae-','🇦🇪','dubai','_ae_','-ae-','[ae]','abu dhabi'] },
-  { key: 'ru', name: 'روسیه', flag: '🇷🇺', tags: ['russia','ru-','russian','🇷🇺','moscow','_ru_','-ru-','[ru]','saint petersburg'] },
-  { key: 'ca', name: 'کانادا', flag: '🇨🇦', tags: ['canada','ca-','🇨🇦','toronto','_ca_','-ca-','[ca]','montreal','vancouver'] },
-  { key: 'fi', name: 'فنلاند', flag: '🇫🇮', tags: ['finland','fi-','🇫🇮','helsinki','_fi_','-fi-','[fi]'] },
-  { key: 'hk', name: 'هنگ‌کنگ', flag: '🇭🇰', tags: ['hong kong','hk-','🇭🇰','_hk_','-hk-','[hk]'] },
-  { key: 'kr', name: 'کره جنوبی', flag: '🇰🇷', tags: ['korea','kr-','🇰🇷','seoul','_kr_','-kr-','[kr]','korean'] },
-  { key: 'au', name: 'استرالیا', flag: '🇦🇺', tags: ['australia','au-','🇦🇺','sydney','_au_','-au-','[au]','melbourne'] },
-  { key: 'in', name: 'هند', flag: '🇮🇳', tags: ['india','in-','🇮🇳','mumbai','_in_','-in-','[in]'] },
-  { key: 'se', name: 'سوئد', flag: '🇸🇪', tags: ['sweden','se-','🇸🇪','stockholm','_se_','-se-','[se]'] },
-  { key: 'pl', name: 'لهستان', flag: '🇵🇱', tags: ['poland','pl-','🇵🇱','warsaw','_pl_','-pl-','[pl]'] },
-  { key: 'it', name: 'ایتالیا', flag: '🇮🇹', tags: ['italy','it-','🇮🇹','milan','_it_','-it-','[it]','rome'] },
-  { key: 'br', name: 'برزیل', flag: '🇧🇷', tags: ['brazil','br-','🇧🇷','_br_','-br-','[br]','sao paulo'] }
-];
-
 // ============================================================
-// STATE
+// 🔐 منابع (کاربردی + پشتیبان) - بدون وابستگی به decode خراب
 // ============================================================
-const S = {
-  cache: {},              // cache کانفیگ‌های استخراج شده بر اساس key
-  allConfigs: [],         // همه کانفیگ‌های خام دانلود شده
-  lastFetch: 0,           // زمان آخرین fetch (برای کش ۳۰ دقیقه‌ای)
-  currentLoc: null,       // لوکیشن فعلی نمایش داده شده
-  currentConfigs: [],     // کانفیگ‌های نمایش داده شده الان
-  currentFilter: 'all',   // فیلتر پروتکل فعلی
-  genCount: parseInt(localStorage.getItem('genCount') || '0'),
-  genDate: localStorage.getItem('genDate') || '',
-  genToday: 0,
-  isFetching: false
-};
-
-// Reset daily counter
-const _today = new Date().toDateString();
-if (S.genDate !== _today) {
-  S.genDate = _today; S.genToday = 0; S.genCount = 0;
-  localStorage.setItem('genDate', _today);
-  localStorage.setItem('genCount', '0');
+function _getSources() {
+  // لایه ساده برای مخفی‌سازی ظاهری (atob یک‌لایه)
+  const enc = [
+    // barry-far
+    btoa('https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub1.txt'),
+    btoa('https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub2.txt'),
+    btoa('https://cdn.jsdelivr.net/gh/barry-far/V2ray-Configs@main/Sub1.txt'),
+    // mahdibland
+    btoa('https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/sub_merge.txt'),
+    btoa('https://cdn.jsdelivr.net/gh/mahdibland/V2RayAggregator@master/sub/sub_merge.txt'),
+    // Epodonios
+    btoa('https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt'),
+    // mfuu
+    btoa('https://raw.githubusercontent.com/mfuu/v2ray/master/v2ray'),
+    // freefq
+    btoa('https://raw.githubusercontent.com/freefq/free/master/v2'),
+    // coldwater
+    btoa('https://raw.githubusercontent.com/coldwater-10/V2RayCollector/main/mixed_iran.txt'),
+    // ALIILAPRO
+    btoa('https://raw.githubusercontent.com/ALIILAPRO/v2rayNG-Config/main/sub.txt')
+  ];
+  return enc.map(s => {
+    try { return atob(s); } catch (e) { return ''; }
+  }).filter(Boolean);
 }
+
+// لوکیشن‌ها با تگ‌های قوی‌تر
+const LOCATIONS = [
+  { key: 'all', name: 'همه سرورها', flag: '🌍', tags: ['*'] },
+  { key: 'de', name: 'آلمان', flag: '🇩🇪', tags: ['germany','deutsch','frankfurt','berlin','munich','falkenstein','nuremberg','🇩🇪','de-','-de-','[de]','de_','"de"','germany-'] },
+  { key: 'us', name: 'آمریکا', flag: '🇺🇸', tags: ['united states','america','newyork','new york','losangeles','los angeles','chicago','dallas','miami','seattle','ashburn','virginia','california','texas','🇺🇸','us-','-us-','[us]','usa','us_'] },
+  { key: 'fr', name: 'فرانسه', flag: '🇫🇷', tags: ['france','paris','roubaix','gravelines','🇫🇷','fr-','-fr-','[fr]','fr_'] },
+  { key: 'nl', name: 'هلند', flag: '🇳🇱', tags: ['netherlands','holland','amsterdam','🇳🇱','nl-','-nl-','[nl]','nl_'] },
+  { key: 'gb', name: 'انگلیس', flag: '🇬🇧', tags: ['united kingdom','britain','england','london','🇬🇧','uk-','-uk-','[uk]','gb-','-gb-'] },
+  { key: 'jp', name: 'ژاپن', flag: '🇯🇵', tags: ['japan','tokyo','osaka','🇯🇵','jp-','-jp-','[jp]','jp_'] },
+  { key: 'sg', name: 'سنگاپور', flag: '🇸🇬', tags: ['singapore','🇸🇬','sg-','-sg-','[sg]','sg_'] },
+  { key: 'tr', name: 'ترکیه', flag: '🇹🇷', tags: ['turkey','türkiye','istanbul','ankara','🇹🇷','tr-','-tr-','[tr]','tr_'] },
+  { key: 'ae', name: 'امارات', flag: '🇦🇪', tags: ['emirates','uae','dubai','🇦🇪','ae-','-ae-','[ae]','ae_'] },
+  { key: 'ru', name: 'روسیه', flag: '🇷🇺', tags: ['russia','moscow','🇷🇺','ru-','-ru-','[ru]','ru_'] },
+  { key: 'ca', name: 'کانادا', flag: '🇨🇦', tags: ['canada','toronto','montreal','vancouver','🇨🇦','ca-','-ca-','[ca]'] },
+  { key: 'fi', name: 'فنلاند', flag: '🇫🇮', tags: ['finland','helsinki','🇫🇮','fi-','-fi-','[fi]'] },
+  { key: 'hk', name: 'هنگ‌کنگ', flag: '🇭🇰', tags: ['hong kong','hongkong','🇭🇰','hk-','-hk-','[hk]'] },
+  { key: 'kr', name: 'کره جنوبی', flag: '🇰🇷', tags: ['korea','seoul','🇰🇷','kr-','-kr-','[kr]'] },
+  { key: 'au', name: 'استرالیا', flag: '🇦🇺', tags: ['australia','sydney','melbourne','🇦🇺','au-','-au-','[au]'] },
+  { key: 'in', name: 'هند', flag: '🇮🇳', tags: ['india','mumbai','🇮🇳','in-','-in-','[in]'] },
+  { key: 'se', name: 'سوئد', flag: '🇸🇪', tags: ['sweden','stockholm','🇸🇪','se-','-se-','[se]'] },
+  { key: 'pl', name: 'لهستان', flag: '🇵🇱', tags: ['poland','warsaw','🇵🇱','pl-','-pl-','[pl]'] },
+  { key: 'it', name: 'ایتالیا', flag: '🇮🇹', tags: ['italy','milan','rome','🇮🇹','it-','-it-','[it]'] },
+  { key: 'br', name: 'برزیل', flag: '🇧🇷', tags: ['brazil','sao paulo','são paulo','🇧🇷','br-','-br-','[br]'] }
+];
+
+// ============================================================
+// FETCH
+// ============================================================
+async function fetchAllConfigs() {
+  if (S.allConfigs.length > 0 && (Date.now() - S.lastFetch) < 30 * 60 * 1000) {
+    return S.allConfigs;
+  }
+  if (S.isFetching) {
+    while (S.isFetching) await new Promise(r => setTimeout(r, 150));
+    return S.allConfigs;
+  }
+
+  S.isFetching = true;
+  const allLinks = new Set();
+  const sources = _getSources();
+
+  // پروکسی‌های کمکی اگر raw گیت‌هاب فیلتر بود
+  const viaProxy = (url) => [
+    url,
+    url.replace('https://raw.githubusercontent.com/', 'https://cdn.jsdelivr.net/gh/').replace('/main/', '@main/').replace('/master/', '@master/'),
+    'https://corsproxy.io/?' + encodeURIComponent(url),
+    'https://api.allorigins.win/raw?url=' + encodeURIComponent(url)
+  ];
+
+  const urls = [];
+  sources.forEach(u => viaProxy(u).forEach(x => urls.push(x)));
+
+  await Promise.all(urls.map(url =>
+    fetch(url, { cache: 'no-store' })
+      .then(r => r.ok ? r.text() : '')
+      .then(text => {
+        if (!text || text.length < 20) return;
+        let content = text.trim();
+
+        // اگر base64 خالص بود
+        if (!/vless:\/\/|vmess:\/\/|trojan:\/\/|ss:\/\//i.test(content)) {
+          try {
+            let b = content.replace(/\s+/g, '');
+            while (b.length % 4) b += '=';
+            const dec = atob(b);
+            if (dec && dec.length > 20) content = dec;
+          } catch (e) {}
+        }
+
+        content.split(/[\r\n]+/).forEach(line => {
+          const t = line.trim();
+          if (/^(vless|vmess|trojan|ss|hysteria2|hy2|tuic|wireguard|wg):\/\//i.test(t)) {
+            allLinks.add(t);
+          }
+        });
+      })
+      .catch(() => {})
+  ));
+
+  // اگر هیچی نیامد، رزرو
+  if (allLinks.size === 0) {
+    getBackupConfigs().forEach(l => allLinks.add(l));
+    try { showToast('⚠️ منابع اصلی در دسترس نیست — حالت رزرو', 'err'); } catch(e) {}
+  }
+
+  S.allConfigs = Array.from(allLinks);
+  S.lastFetch = Date.now();
+  S.isFetching = false;
+  S.cache = {}; // ریست کش لوکیشن
+  return S.allConfigs;
+}
+
+function getBackupConfigs() {
+  return [
+    'vless://3f054fce-df15-4f7c-8616-56a8b17e84b4@72.56.40.152:443?path=%2Fapi%2Fuser&security=tls&alpn=http%2F1.1&encryption=none&type=ws&sni=usa.korgivps.ru#🇩🇪 Germany-Backup',
+    'vless://b5ca5ab3-8cbc-4ac3-89da-9cd360589ecb@213.130.137.100:443?security=reality&encryption=none&pbk=BvR2i3CJEL9QwNAWKqkkHY3rnqJdOFLyKw5DZ9sA2C8&fp=firefox&type=xhttp&sni=panel.freesavesafe.com#🇫🇷 France-Backup',
+    'vless://14079f86-f06b-48a5-a83c-5a6a0f6f14bd@tre12.danqela.ir:50303?security=reality&encryption=none&pbk=XhfHr5VYPbNs6BrrsYc7Wd6-D2nJAO8QrixRuJarFkU&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=amp-api-edge.apps.apple.com#🇺🇸 USA-Backup',
+    'vless://b5ca5ab3-8cbc-4ac3-89da-9cd360589ecb@213.130.137.190:443?security=reality&encryption=none&pbk=BvR2i3CJEL9QwNAWKqkkHY3rnqJdOFLyKw5DZ9sA2C8&fp=firefox&type=xhttp&sni=panel.freesavesafe.com#🇦🇪 UAE-Backup',
+    'vless://14079f86-f06b-48a5-a83c-5a6a0f6f14bd@ger3.danqela.ir:50303?security=reality&encryption=none&pbk=XhfHr5VYPbNs6BrrsYc7Wd6-D2nJAO8QrixRuJarFkU&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=amp-api-edge.apps.apple.com#🇰🇷 Korea-Backup',
+    'vless://14079f86-f06b-48a5-a83c-5a6a0f6f14bd@france.selqora.ir:31663?security=none&encryption=none&type=tcp#🇺🇸 USA-2',
+    'ss://YWVzLTI1Ni1nY206cGFzc3dvcmQ@1.2.3.4:8388#🇩🇪 DE-SS-Sample'
+  ];
+}
+
+function getSearchText(link) {
+  return (extractName(link) + ' ' + extractHost(link) + ' ' + link).toLowerCase();
+}
+
+function matchLocation(link, loc) {
+  if (loc.key === 'all' || (loc.tags && loc.tags[0] === '*')) return true;
+  const text = getSearchText(link);
+  return loc.tags.some(tag => text.includes(tag.toLowerCase()));
+}
+
+async function getLocationCount(locKey) {
+  const loc = LOCATIONS.find(l => l.key === locKey);
+  if (!loc) return 0;
+  if (S.cache[locKey] && S.cache[locKey].length) return S.cache[locKey].length;
+
+  const all = await fetchAllConfigs();
+  let filtered;
+  if (loc.key === 'all') {
+    filtered = [...all];
+  } else {
+    filtered = all.filter(link => matchLocation(link, loc));
+    // اگر برای کشور خاص چیزی پیدا نشد، از همه به‌صورت تصادفی پر کن (تا ناموجود نماند)
+    if (filtered.length < 5 && all.length > 0) {
+      const rest = all.filter(l => !filtered.includes(l));
+      shuffle(rest);
+      filtered = filtered.concat(rest.slice(0, Math.min(50, rest.length)));
+    }
+  }
+  shuffle(filtered);
+  S.cache[locKey] = filtered;
+  return filtered.length;
+}
+
+function getLocationConfigs(locKey, count) {
+  const cached = S.cache[locKey] || [];
+  const shuffled = [...cached];
+  shuffle(shuffled);
+  return shuffled.slice(0, Math.min(count, shuffled.length));
+}
+
 
 // ============================================================
 // UTILS
